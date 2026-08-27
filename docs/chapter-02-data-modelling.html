@@ -305,13 +305,13 @@ body.mode-scroll #deck{display:none}
 <p>Some columns describe a person rather than a thing: an email, an address, a birthdate, free text they typed about themselves. Each is a liability as well as an asset — it can be leaked, it has to be deletable when the person leaves, and in most places keeping it needs a reason you could state. At recognition depth the rule is: hold what the product uses, know for how long, and have a path that removes it. Chapter 9 covers the same data on its way out to other services.</p>
 <h2 id="why-changing-a-schema-is-expensive">Why changing a schema is expensive</h2>
 <p>A <strong>migration</strong> is a script that changes the schema: add a table, add a column, change a type. Against an empty database it’s trivial. Against real rows, three costs appear: existing rows need values for new columns (a <strong>backfill</strong>), some changes can’t be undone (a dropped column’s data is gone), and mistakes mid-migration can leave the data half-transformed. The practical consequence runs backwards: review effort belongs on schema proposals <em>before</em> rows accumulate, because that’s the last point where changing your mind is free.</p>
-<h2 id="blobs-against-columns">Blobs against columns</h2>
+<h2 id="a-json-column-against-real-columns">A JSON column against real columns</h2>
 <p>Most databases offer a JSON column: a place to store arbitrary structured data without declaring its shape. The trade is flexibility now against consequences later — no constraints, weaker querying, and every reader guessing at the contents’ shape. It fits data that is genuinely irregular or that only gets stored and displayed. Anything you’ll filter by, join on, or enforce rules about belongs in columns.</p>
 <h2 id="when-tables-get-big">When tables get big</h2>
 <p>An <strong>index</strong> is a lookup structure the database maintains for a column, so a query filtering on that column stops scanning the whole table. Queries that are fast at a thousand rows and unusable at a million usually differ by one missing index. The related failure is the query with no upper bound: a list view that fetches every row works in the demo and grows with the table until it doesn’t — lists need <strong>pagination</strong>, a limit plus a way to fetch the next batch.</p>
 <hr />
 <h1 id="what-goes-wrong">What goes wrong</h1>
-<p>There are ten entries: the first four concern the shape itself, the next five what the shape does to reads, writes, and growth, and the last what the schema holds about people.</p>
+<p>There are ten entries: the first four concern the shape itself, the fifth what the schema holds about people, and the rest what the shape does to reads, writes, and growth.</p>
 <blockquote>
 <p><strong>A boolean where a table belongs</strong> — a flag standing in for something with variants.<br />
 <em>Tell:</em> columns like <code>repeat_weekly</code> or <code>is_premium</code>, where a second variant is plausible.<br />
@@ -328,13 +328,19 @@ body.mode-scroll #deck{display:none}
 <p><strong>Current state stored alongside history</strong> — a value stored in two places with nothing keeping them equal.<br />
 <em>Tell:</em> a <code>status</code> column plus an events or log table that also implies the status; a <code>total</code> column plus the line items it’s computed from.<br />
 <strong>Ask:</strong> “Which columns can be derived from other tables? For each, say what keeps them in sync, and what happens if a write fails halfway.”<br />
-<strong>Check:</strong> cause the drift deliberately in a test copy, then see whether anything notices.</p>
+<strong>Check:</strong> cause the drift deliberately in a test copy (chapter 0, D1), then see whether anything notices.</p>
 </blockquote>
 <blockquote>
 <p><strong>A destructive migration presented as additive</strong> — a change described as adding a feature that also loses data.<br />
 <em>Tell:</em> a column rename, a type change, or a dropped default inside a migration whose description mentions none of them.<br />
 <strong>Ask:</strong> “List every statement in this migration that loses data or breaks an existing read. For each, give the rollback.”<br />
 <strong>Check:</strong> run it against a copy with real data before running it against the real thing.</p>
+</blockquote>
+<blockquote>
+<p><strong>Personal data with no reason and no exit</strong> — columns about a person that nothing needed and nothing deletes.<br />
+<em>Tell:</em> emails, addresses, birthdates, or free text about users, kept with no stated purpose and no path that removes them when the account goes.<br />
+<strong>Ask:</strong> “List every column that holds information about a person. For each: what the product does with it, how long it’s kept, and what happens to it when the person deletes their account. Write forever and nothing where those are the answers.”<br />
+<strong>Check:</strong> delete a test account, then search every table for its rows.</p>
 </blockquote>
 <blockquote>
 <p><strong>Soft delete that still appears in reads</strong> — deleted rows shown because a query didn’t exclude them.<br />
@@ -366,20 +372,14 @@ body.mode-scroll #deck{display:none}
 <strong>Ask:</strong> “For each table that references stored files, state what happens to the file when the row is deleted. Say nothing where the answer is nothing.”<br />
 <strong>Check:</strong> delete a test row, then look for its file in storage.</p>
 </blockquote>
-<blockquote>
-<p><strong>Personal data with no reason and no exit</strong> — columns about a person that nothing needed and nothing deletes.<br />
-<em>Tell:</em> emails, addresses, birthdates, or free text about users, kept with no stated purpose and no path that removes them when the account goes.<br />
-<strong>Ask:</strong> “List every column that holds information about a person. For each: what the product does with it, how long it’s kept, and what happens to it when the person deletes their account. Write forever and nothing where those are the answers.”<br />
-<strong>Check:</strong> delete a test account, then search every table for its rows.</p>
-</blockquote>
 <h2 id="the-direct-test">The direct test</h2>
-<p>Ask for the list of states your schema permits and your product forbids (the second entry’s ask), pick the worst one, and insert it into a test copy. What stops it — a constraint, an error from application code, or nothing — is the measure of how much your schema is enforcing on its own, and it’s the guard that will still be there when new code writes to the same table.</p>
+<p>Ask for the list of states your schema permits and your product forbids (the second entry’s ask), pick the worst one, and insert it into a test copy (chapter 0’s D1 prompt gets you one). What stops it — a constraint, an error from application code, or nothing — is the measure of how much your schema is enforcing on its own, and it’s the guard that will still be there when new code writes to the same table.</p>
 <hr />
 <h1 id="going-deeper">Going deeper</h1>
 <p>These prompts are for your assistant, and each comes with a note on what a good response looks like.</p>
 <p><strong>D1 · Interrogate the schema</strong> <em>(audit)</em></p>
 <blockquote>
-<p>Here is my schema: [paste it, or point at the migrations]. Produce three lists. One: every boolean column, with the second and third variant a user might eventually want — ‘none’ where there isn’t one. Two: every nullable column, with each distinct thing empty can mean in it. Three: every column whose value could be computed from other tables, with what keeps it in sync. Full lists, as tables, no summarizing.</p>
+<p>Here is my schema: [point your assistant at the project — on a hosted database the table editor holds it, and there may be a migrations folder]. Produce three lists. One: every boolean column, with the second and third variant a user might eventually want — ‘none’ where there isn’t one. Two: every nullable column, with each distinct thing empty can mean in it. Three: every column whose value could be computed from other tables, with what keeps it in sync. Full lists, as tables, no summarizing.</p>
 </blockquote>
 <p><em>A good response has a row for every column that qualifies, and the second list is where findings usually live — any nullable column with two meanings listed is a real decision waiting. Follow up on each: “what would fixing this cost now, and at a hundred thousand rows?”</em></p>
 <p><strong>D2 · Explain my schema back to me</strong> <em>(grounded explanation)</em></p>

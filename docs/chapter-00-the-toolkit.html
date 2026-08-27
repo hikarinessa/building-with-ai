@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>03 · Source of truth</title>
+<title>00 · The toolkit</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Manrope:wght@400;500;600;700&family=Inter:wght@400;500;600&family=Instrument+Sans:wght@400;500;600&family=DM+Sans:wght@400;500;600&family=Space+Grotesk:wght@400;500;600&family=Petrona:ital,wght@0,300..700;1,300..700&family=Charis+SIL:ital,wght@0,400;0,700;1,400;1,700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&family=Spectral:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -255,116 +255,67 @@ body.mode-scroll #deck{display:none}
  "diagStroke": 1.75,
  "diagFs": 15
 }</script>
-<script id="nav" type="application/json">{"index":"index.html","prev":{"href":"chapter-02-data-modelling.html","num":"02","title":"Data modelling"},"next":{"href":"chapter-04-the-request-lifecycle.html","num":"04","title":"The request lifecycle"}}</script>
+<script id="nav" type="application/json">{"index":"index.html","prev":null,"next":{"href":"chapter-01-client-and-server.html","num":"01","title":"Client and server"}}</script>
 </head>
 <body class="rail-style-line card-style-tint">
-<div id="src"><h1 id="chapter-3-source-of-truth">Chapter 3 — Source of truth</h1>
-<h2 id="where-each-piece-of-data-is-stored-and-what-happens-when-copies-disagree">Where each piece of data is stored, and what happens when copies disagree</h2>
-<p>A value on screen has usually been copied several times on its way there: a database row, a server response, a client-side cache, a component’s state, a form’s initial value. Each copy can age or diverge, and most bugs where the screen shows the wrong thing trace to two copies with no rule for which one is right. This chapter is the set of distinctions that make those bugs diagnosable: stored against derived, the server’s copy against the client’s, and what happens when two operations run at once.</p>
-<p><em>Assumes chapter 1’s two sides; chapter 2 covers the stored side’s shape.</em></p>
+<div id="src"><h1 id="chapter-0-the-toolkit">Chapter 0 — The toolkit</h1>
+<h2 id="how-the-course-is-used-and-the-prompts-every-other-chapter-assumes-you-have">How the course is used, and the prompts every other chapter assumes you have</h2>
+<p>This course teaches mental models, and it hands you prompts for investigating a project with an assistant. You can read all of it with no project at all. When you do have one — yours, a client’s, something you inherited — the prompts are what you run, and the checks are how you find out whether what came back is true. This chapter is the ten minutes of setup the rest assumes: what an assistant needs in order to investigate, how to read the lists it returns, and three things you may not know how to do that your assistant can do for you.</p>
 <hr />
 <h1 id="the-model">The model</h1>
-<h2 id="stored-and-derived-values">Stored and derived values</h2>
-<p>Every value is either recorded directly or computable from other recorded values. An order’s line items are stored; its total is derivable. The design rule is that each fact gets one authoritative home, and everything derivable is computed at read time — because a stored copy of a derivable value is a second home, and two homes need a synchronization mechanism, which is code that can fail halfway. Storing a derived value is sometimes justified by cost (recomputing is expensive), and then the synchronization mechanism gets named and checked rather than assumed.</p>
-<h2 id="the-servers-copy-and-the-clients-copies">The server’s copy and the client’s copies</h2>
-<p>When the browser fetches data, it receives a copy that was correct at the moment of the response. The database keeps changing after that moment, and nothing notifies the copy. Fetched data is therefore a cache: a copy kept for speed, aging from the moment it arrives.</p>
-<p>The copies multiply quietly; a typical path holds five: the database row, the server’s response, the client’s fetch cache, a component’s state (a component is one piece of the interface — a form, a list — with its own memory), and a form’s initial value. Duplication starts where fetched data gets treated as local state — copied out of the cache into a component, after which the two age independently and edits land in one but not the other.</p>
-<figure class="diagram-fig"><svg aria-label="five boxes left to right — database row, server response, fetch cache, component state, form value — each stamped with a different age; an edit arrow entering at the form and reaching only some of the boxes on its way back" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 300" role="img">
-  <defs>
-    <marker id="ah3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="ah" d="M0 0 L10 5 L0 10 z"/></marker>
-  </defs>
-  <text class="lab" x="40" y="30">one value on its way to the screen</text>
-  <!-- five copies -->
-  <rect class="box ac" x="40" y="120" width="130" height="60" rx="6"/>
-  <text x="105" y="156" text-anchor="middle">database row</text>
-  <rect class="box" x="190" y="120" width="130" height="60" rx="6"/>
-  <text class="sm" x="255" y="156" text-anchor="middle">server response</text>
-  <rect class="box" x="340" y="120" width="130" height="60" rx="6"/>
-  <text x="405" y="156" text-anchor="middle">fetch cache</text>
-  <rect class="box" x="490" y="120" width="130" height="60" rx="6"/>
-  <text class="sm" x="555" y="156" text-anchor="middle">component state</text>
-  <rect class="box" x="640" y="120" width="130" height="60" rx="6"/>
-  <text x="705" y="156" text-anchor="middle">form value</text>
-  <!-- read arrows -->
-  <line class="ln mu" x1="170" y1="150" x2="188" y2="150" marker-end="url(#ah3)"/>
-  <line class="ln mu" x1="320" y1="150" x2="338" y2="150" marker-end="url(#ah3)"/>
-  <line class="ln mu" x1="470" y1="150" x2="488" y2="150" marker-end="url(#ah3)"/>
-  <line class="ln mu" x1="620" y1="150" x2="638" y2="150" marker-end="url(#ah3)"/>
-  <!-- ages -->
-  <text class="ac" x="105" y="206" text-anchor="middle">the truth, changing</text>
-  <text class="mu" x="255" y="206" text-anchor="middle">true at response time</text>
-  <text class="mu" x="405" y="206" text-anchor="middle">aging since fetched</text>
-  <text class="mu" x="555" y="206" text-anchor="middle">aging since copied</text>
-  <text class="mu" x="705" y="206" text-anchor="middle">aging since opened</text>
-  <!-- the edit path back -->
-  <path class="ln ac" d="M705 118 C705 62, 105 62, 105 118" fill="none" marker-end="url(#ah3)"/>
-  <text class="ac" x="405" y="54" text-anchor="middle">an edit goes straight back to the row</text>
-  <line class="ln mu dash" x1="405" y1="214" x2="405" y2="246"/>
-  <line class="ln mu dash" x1="555" y1="214" x2="555" y2="246"/>
-  <text class="mu" x="480" y="268" text-anchor="middle">the cache and the component still hold the old value until something refreshes them</text>
-</svg></figure>
-<h2 id="staleness">Staleness</h2>
-<p>Every cache implies an answer to one question: when is this copy refreshed? Common answers are on a timer, when the user returns to the window, and after any write that would change it. “Never” is also an answer, and it’s the right one only for data that never changes — for anything else it’s a bug that presents as users seeing old data until they reload.</p>
-<h2 id="two-operations-at-once">Two operations at once</h2>
-<p>Requests take time, so two can be in flight together, and responses can return in a different order than the requests were sent. A search box that fires a request per keystroke can receive the results for “a” after the results for “ab”, and if the code applies whichever response arrived last, the screen shows results for a query the user is no longer making. This is a <strong>race condition</strong>: an outcome that depends on timing rather than on logic. The general guard is to make the code state which operation’s result it’s waiting for and ignore the superseded ones.</p>
-<h2 id="operations-safe-to-repeat">Operations safe to repeat</h2>
-<p>An operation is <strong>idempotent</strong> if running it twice has the same effect as running it once. Setting a title is idempotent; appending a comment isn’t. The property matters here because repeats happen without anyone choosing them — double-clicks, retries after a timeout, a refresh mid-submit — so any operation that creates or accumulates needs either a guard against repeats or an <strong>idempotency key</strong>: an identifier supplied with the operation so the receiver can recognize the second attempt as a duplicate. Chapter 9 applies this to calls that leave your system.</p>
-<h2 id="the-url-as-a-home-for-state">The URL as a home for state</h2>
-<p>Which screen the user is on, what’s selected, which filters are active — this state describes where the user is, and when it lives only in component memory, three things break at once: refresh loses it, the back button misbehaves, and the view can’t be shared as a link. State of this kind belongs in the URL, which makes the browser’s own history mechanism maintain it.</p>
-<hr />
-<h1 id="what-goes-wrong">What goes wrong</h1>
+<h2 id="two-kinds-of-tool">Two kinds of tool</h2>
+<p>Every chapter closes with two kinds of thing to run. An <strong>ask</strong> is a prompt that produces a list — every table with its policies, every endpoint with who can call it, every place a secret is used. You judge the list by its shape, without understanding its contents. A <strong>check</strong> is an observation that settles whether the list was right — a request you send, a screen you look at, a row you read. Asks are cheap and can be wrong; checks are slower and can’t be argued with. The chapters use both, and chapter 12 is about deciding how much checking a change deserves.</p>
+<h2 id="an-assistant-that-can-read-the-project">An assistant that can read the project</h2>
+<p>The asks assume an assistant that works inside your files — Claude Code, Cursor, Codex, Windsurf, and their equivalents. A chat window works too, with the relevant files pasted in first, and the list it returns covers only what you pasted. The first prompt to run on any project is the one that tells you what you’re standing on:</p>
 <blockquote>
-<p><strong>One value, three copies</strong> — the same data held in several client-side homes that age independently.<br />
-<em>Tell:</em> server data appearing in a fetch cache, in component state, and in a form’s initial value.<br />
-<strong>Ask:</strong> “List every place this data exists on the client, and for each: what writes it and what refreshes it.”<br />
-<strong>Check:</strong> change the value in one place and look at the others.</p>
+<p>What’s my stack? Name the framework, the language, the database, the login system, the host, and where the code’s history lives. One line each. Say unknown where you can’t tell.</p>
 </blockquote>
-<blockquote>
-<p><strong>Optimistic update with no rollback</strong> — the screen assumes the write will succeed and has no plan for when it doesn’t.<br />
-<em>Tell:</em> a local update applied before the request is sent, with no handling of a rejected response.<br />
-<strong>Ask:</strong> “For each place the interface updates before the server confirms, state what happens when the server rejects the write, and what the user sees.”<br />
-<strong>Check:</strong> block the request in devtools (D4 shows how) and watch the screen.</p>
-</blockquote>
-<blockquote>
-<p><strong>Failure after the user has typed</strong> — a rejected submission that discards the input.<br />
-<em>Tell:</em> no submission state, and no branch for a failed response.<br />
-<strong>Ask:</strong> “Walk through a submission that fails after thirty seconds. What does the user see at each moment, and is their input still there at the end?”<br />
-<strong>Check:</strong> block the request in devtools and submit a filled form.</p>
-</blockquote>
-<blockquote>
-<p><strong>State that belongs in the URL</strong> — a view that can’t survive a refresh or be linked to.<br />
-<em>Tell:</em> filters, selections, or the current item held only in component memory.<br />
-<strong>Ask:</strong> “List every piece of state that describes where the user is or what they’re looking at, and whether each survives a refresh. Say no explicitly.”<br />
-<strong>Check:</strong> set up a filtered view, refresh, then press back.</p>
-</blockquote>
-<h2 id="the-direct-test">The direct test</h2>
-<p>Open your app in two windows side by side. Change something in one and watch whether, and when, the other notices. Then block the network in one window’s devtools and try a write — D4 below has your assistant show you how, and chapter 0’s D2 is the shorter version. It takes about ten minutes, and the results are your app’s actual answers to the staleness question and the rollback question, whatever the code was intended to do.</p>
+<p>That answer is the vocabulary for everything after — advice transfers within a stack far better than across, and knowing the names lets you ask about your actual setup rather than the general case.</p>
+<h2 id="reading-a-list-for-its-shape">Reading a list for its shape</h2>
+<p>A vague question has no failing answer. “Are there any authorization gaps?” returns “this looks good” reliably, because nothing in the question forces a finding to surface. The asks throughout the course are built from six patterns, and once you can see them you can write your own:</p>
+<ol type="1">
+<li><strong>A list with a completeness criterion</strong> — “every table, all four operations; flag any with fewer than four.” You can count rows and flags without knowing what the operations mean.</li>
+<li><strong>State the source</strong> — “for each write, does the user’s identity come from the session or the request body?” A forced choice between a right answer and a wrong one.</li>
+<li><strong>Say none if absent</strong> — the instruction that turns a silent omission into a visible word. Without it, a missing thing produces nothing; with it, a missing thing produces “none,” which you can read.</li>
+<li><strong>Walk the failure path</strong> — “step by step, what stops this bad request, and does anything actually?” The walk has to reach a definite ending: blocked at a named step, or not.</li>
+<li><strong>List what this depends on</strong> — surfaces the neighbour that the change quietly leans on.</li>
+<li><strong>Plant a control</strong> — before trusting a list, seed one finding you already know about and see whether the list surfaces it. A list that misses the planted item wasn’t complete. A list that has never had this done to it has never been shown able to find anything, and that includes every list in this course until you’ve tried it once.</li>
+</ol>
+<p>The anti-patterns are yes/no questions, “any problems?”, and anything the assistant can satisfy with a summary. And where you ask matters as much as how: the session that wrote the code is the session most likely to defend it, so audits run in a fresh session with the code read cold.</p>
+<h2 id="three-things-your-assistant-can-do-for-you">Three things your assistant can do for you</h2>
+<p>Some checks need a capability you may not have, and none of them needs learning. The move, every time, is to hand the setup to the assistant and ask for the exact thing to run. Three come up throughout the course.</p>
+<p><strong>A copy of the database you can break.</strong> Several checks say “in a test copy”: insert a row your product forbids, delete a test account, make a write fail halfway. The copy is what makes that safe. Your platform has a way to get one — a branch, a second project, a local database seeded from a dump — and the assistant knows which.</p>
+<p><strong>Re-sending a request from the browser.</strong> Chapters 1, 3, 4 and 6 have you open the browser’s developer tools, find the request a form sent, and send it again with something changed. It’s a two-minute skill once shown, and it’s the single most useful thing a non-programmer can learn to do to their own app, since it’s how you find out what the server accepts rather than what the form allows.</p>
+<p><strong>Building the client the way production does.</strong> Chapter 7’s direct test searches the built client for secrets. The build is a command; the assistant knows which one and where the output lands.</p>
+<p>The going-deeper section has the three prompts. Run whichever a chapter’s check needs, when it needs it.</p>
+<h2 id="what-a-finding-is">What a finding is</h2>
+<p>A finding is a row on a list, or a check that came back wrong. It isn’t an emergency and it isn’t a verdict — it’s the start of a conversation with the assistant, in which you ask what the fix is, what it touches, and how you’d know it worked. Chapter 12 decides how much evidence that conversation should end with, by what the change touches.</p>
 <hr />
 <h1 id="going-deeper">Going deeper</h1>
-<p>These prompts are for your assistant, and each comes with a note on what a good response looks like.</p>
-<p><strong>D1 · Inventory the copies</strong> <em>(audit)</em></p>
+<p>These are the capability prompts the other chapters’ checks assume, plus one for the rules file. Each comes with a note on what a good response looks like.</p>
+<p><strong>D1 · A copy I can break</strong> <em>(build a toy)</em></p>
 <blockquote>
-<p>Pick the most important piece of data in my app: [name it]. List every place a copy of it exists between the database and the screen — server responses, caches, stores, component state, form values. For each copy: what writes it, what refreshes it, and what the user sees if it’s stale. Full list, as a table.</p>
+<p>I want a copy of this project’s database that I can damage without affecting anything real — a branch, a second project, or a local database seeded from the real one, whichever fits this stack. Set it up with me step by step, tell me how to point the app at it and back, and finish by showing me one harmless write against the copy so I can see it’s separate.</p>
 </blockquote>
-<p><em>A good response has more rows than you expected and an honest answer in every “what refreshes it” cell — “nothing” is a finding, and so is two copies refreshed by different events.</em></p>
-<p><strong>D2 · Trace one value there and back</strong> <em>(grounded explanation)</em></p>
+<p><em>A good response ends with two things you can see: the copy’s name or address, and the app running against it. If the assistant proposes working against the real database “carefully,” decline — the copy is the point.</em></p>
+<p><strong>D2 · Re-send a request</strong> <em>(build a toy)</em></p>
 <blockquote>
-<p>Trace [the same piece of data] from its database row to the pixels, and then back through an edit: every copy made, every transformation applied, and the moment the database is updated. Point at the actual files at each step.</p>
+<p>Show me how to re-send one of my own app’s requests from the browser. Walk me through it: open the developer tools, find the network tab, submit [a form in my app], find the request it sent, copy it as a fetch call, and send it again from the console with one value changed to something the form wouldn’t allow. Tell me exactly what to click and what to paste, and help me read what comes back.</p>
 </blockquote>
-<p><em>A good response is a sequence you could follow with the files open. The finding to watch for is a copy on the way out that the edit path doesn’t update.</em></p>
-<p><strong>D3 · Walk the race</strong> <em>(walk the failure path)</em></p>
+<p><em>A good response is a sequence you can follow with the browser open, ending with a response you can interpret — accepted or rejected. Once you’ve done it once you can do every check in the course that says “send the request directly.”</em></p>
+<p><strong>D3 · Build the client</strong> <em>(build a toy)</em></p>
 <blockquote>
-<p>Walk me through what happens when the same record is edited twice at nearly the same time — a double-click on save, or two tabs open on the same item. Step by step: both requests, the order the database sees them, what the final stored state is, and whether anything tells the user whose edit lost.</p>
+<p>Build this project’s client the way production builds it, and tell me where the output is. Then search the output for the first eight characters of each secret in my environment file, and show me the exact command you used so I can run it again after changes.</p>
 </blockquote>
-<p><em>A good response reaches a definite final state and names which write wins. “That can’t happen” is a claim to test — the double-click version takes seconds to try.</em></p>
-<p><strong>D4 · Force the failure</strong> <em>(build a toy)</em></p>
+<p><em>A good response names the build command, the output folder, and the search, and reports each secret as found or not found. Any “found” is chapter 7’s subject.</em></p>
+<p><strong>D4 · Find the rules file</strong> <em>(grounded explanation)</em></p>
 <blockquote>
-<p>Help me use devtools to test my own app’s failure behaviour: block the network mid-write and watch what the screen claims; then submit a form with the request blocked and see whether my input survives; then throttle the connection and watch which screens go stale.</p>
+<p>Which file does my assistant read for standing instructions in this project, and does one exist yet? Name it for my tool — <code>CLAUDE.md</code> for Claude Code, <code>AGENTS.md</code> for Codex, <code>.cursor/rules</code> for Cursor, <code>.windsurfrules</code> for Windsurf, <code>.github/copilot-instructions.md</code> for Copilot — and create an empty one with a one-line heading if it’s missing.</p>
 </blockquote>
-<p><em>About twenty minutes of work turns this chapter’s entries into things you’ve seen on your own screens. Each surprise is an entry’s check that just failed.</em></p>
+<p><em>A good response names one file and confirms it exists. Chapters 6 and 11 give you rules to put in it.</em></p>
 <hr />
 <h2 id="where-this-connects">Where this connects</h2>
-<p><strong>Chapter 2 · Data modelling</strong> covers the stored side — its derived-columns entry and this chapter’s stored-against-derived section are the same rule on either side of the database boundary. <strong>Chapter 9 · Third-party integrations</strong> applies idempotency to calls that leave your app. <strong>Chapter 4 · The request lifecycle</strong> names the path these copies travel.</p>
+<p><strong>Chapter 1 · Client and server</strong> is where the re-send skill first matters, and the chapter to read next. <strong>Chapter 12 · Verification</strong> turns the finding into a decision about evidence. <strong>Chapter 11 · The loop</strong> is where the rules file earns its keep.</p>
 </div>
 <div id="deck"></div>
 <div id="panel" class="hidden"></div>

@@ -275,6 +275,7 @@ body.mode-scroll #deck{display:none}
 <h2 id="what-an-assertion-is">What an assertion is</h2>
 <p>A <strong>test</strong> is a small program that performs one action against the code and checks one claim about the result: call the function with these inputs and the output must equal this; request user A’s row as user B and the result must be empty. It passes or fails, and it can be run again — after every change, on every deploy — which is what separates it from the first form. Evidence you produce by hand is true at the moment you produce it; an assertion keeps being true, or stops and says so.</p>
 <p>The property that matters most is one you can judge without reading the test: could it fail? A real test asserts a specific claim, and a change that broke the claim would make it fail. A test that passes on an empty result, that checks the code ran without checking what it did, or that asserts a value the test itself set up, can’t fail on the claim it’s named after — the proxy green from the entries below, written down as a test. The going-deeper section has the ask for this, with “what change would make it fail” as the completeness criterion.</p>
+<p>If your project has no tests at all — common, and nothing to apologise for — the on-ramp is one: ask for a single assertion covering the most sensitive claim you have, usually “a user without access gets zero rows,” and run it. D5 begins there.</p>
 <h2 id="reports-from-the-author">Reports from the author</h2>
 <p>An account of work written by the party that did the work is shaped by the assumptions that produced the work. This is older than any particular tool — it’s why code review is assigned to someone other than the author, why audits are external, and why your own last-month decisions look sounder in memory than in the file. An assistant is no exception: the session that wrote the code holds the context that made every choice seem right, and asked “is this okay?” it tends to say yes.</p>
 <p>With an assistant, an independent reviewer is cheap. A fresh session with the code pasted in cold, a framing that asks for problems rather than approval, or a different assistant each surface more findings than asking the author. How much more varies by tool and version, so measure it on your own setup rather than assuming — the going-deeper section has the experiment, and re-running it when your tool changes is what keeps this chapter calibrated as tools improve.</p>
@@ -341,7 +342,7 @@ body.mode-scroll #deck{display:none}
 <tbody>
 <tr>
 <td><strong>A</strong></td>
-<td>Authorization, money, deletion, migrations, secrets, anything crossing the trust boundary</td>
+<td>Authorization, money, deletion, migrations (schema changes, chapter 2), secrets, anything crossing the trust boundary</td>
 <td>1 at the change, then 2 kept — evidence you run, and an assertion that keeps running</td>
 </tr>
 <tr>
@@ -410,23 +411,14 @@ body.mode-scroll #deck{display:none}
 <p><strong>Better tools relax tiers B through D, by measurement rather than by feel.</strong> As generation gets more reliable, a spot check can replace assertions wherever your own measured failure rate supports it, the same way any process retires an inspection step. Tier A stays, because its case doesn’t rest on the generator’s error rate: its failures are silent, so no feedback ever arrives to justify relaxing, and severe, so the check stays cheap relative to the loss. Authorization, money, and migration changes get independent review in all-human teams too, whatever the author’s seniority.</p>
 <p><strong>Small unreviewed choices compound.</strong> Each level-4 acceptance is individually fine; jointly they produce a codebase you no longer know the contents of — at which point you can’t ask good questions about it, and the whole method degrades. The answer is scheduled audits for the failures that never produce a symptom on their own: an entry in the calendar, with a stated question to ask, for the things nothing will ever remind you of — schema decisions aging badly, accumulated duplication, cost curves.</p>
 <h2 id="asking-for-enumerations">Asking for enumerations</h2>
-<p>The asks throughout this series share one design: they demand a list with a property you can judge without reading its contents. A vague question has no failing answer — “are there any authorization gaps?” returns “this looks good” reliably, because nothing in the question forces a finding to surface. The patterns that work:</p>
-<ol type="1">
-<li><strong>List with a completeness criterion</strong> — “every table, all four operations; flag any with fewer than four.” You can count rows and flags without understanding SQL.</li>
-<li><strong>State the source</strong> — “for each write, session or request body?” A forced choice between a right answer and a wrong one.</li>
-<li><strong>Say none if absent</strong> — the instruction that turns a silent omission into a visible word.</li>
-<li><strong>Walk the failure path</strong> — “step by step, what stops this bad request, and does anything actually?” The walk must reach a definite ending.</li>
-<li><strong>List what this depends on</strong> — surfaces the neighbour that the change silently leans on.</li>
-<li><strong>Plant a control</strong> — before trusting an enumeration, seed one finding you know about and see whether the list surfaces it. A list that misses the planted item wasn’t complete, and a list that has never had this done to it has never been shown able to find anything.</li>
-</ol>
-<p>And the anti-patterns: yes/no questions, “any problems?”, and anything the assistant can satisfy with a summary. Where you ask matters as much as how — a fresh session with the code pasted in, per the section above. The asks also assume an assistant that can read your project: a tool that works inside your files rather than a chat window you paste into. From a chat window, every audit starts with pasting the relevant files, and the list it returns covers only what you pasted.</p>
+<p>The asks throughout this series share one design: they demand a list with a property you can judge without reading its contents, and chapter 0 gives the six patterns they’re built from. The one to apply before trusting any list this series produces is the last of them, <em>plant a control</em>: seed a finding you already know about and see whether it surfaces. Two things about where you ask: a fresh session with the code read cold, per the section above, and an assistant that can read the project, since from a chat window every audit covers only what you pasted.</p>
 <hr />
 <h1 id="what-goes-wrong">What goes wrong</h1>
 <p>This chapter’s failures live in the verifying rather than the code, and each entry gives the habit, its tell, and the correction.</p>
 <blockquote>
 <p><strong>The vague question</strong> — a review request with no failing answer.<br />
 <em>Tell:</em> your question could be answered with “looks good” and often is.<br />
-<em>Instead:</em> one of the enumeration patterns above, with the completeness criterion stated.</p>
+<em>Instead:</em> one of chapter 0’s enumeration patterns, with the completeness criterion stated.</p>
 </blockquote>
 <blockquote>
 <p><strong>Asking the author</strong> — the session that wrote the code is the session reviewing it.<br />
@@ -450,7 +442,7 @@ body.mode-scroll #deck{display:none}
 <p>These prompts are for your assistant, and each comes with a note on what a good response looks like.</p>
 <p><strong>D1 · Tier the history</strong> <em>(audit)</em></p>
 <blockquote>
-<p>Look at the last twenty changes in my project’s history. For each: one line on what it touched, its tier — A for authorization/money/deletion/migrations/secrets/trust boundary, B for logic with a correct answer, C for interface and tooling, D for throwaway — and, as far as you can tell, what verification it actually got. Present it as a table and flag every A-row whose verification you can’t point to.</p>
+<p>Find my project’s history — say where it lives, or that there is none — then look at the last twenty changes. For each: one line on what it touched, its tier — A for authorization/money/deletion/migrations/secrets/trust boundary, B for logic with a correct answer, C for interface and tooling, D for throwaway — and, as far as you can tell, what verification it actually got. Present it as a table and flag every A-row whose verification you can’t point to.</p>
 </blockquote>
 <p><em>A good response is a table you can read in one pass, and the flagged rows are your worklist. If tiers come back without reasons, ask for the reason column — “touches a migration” is checkable, a bare “A” isn’t.</em></p>
 <p><strong>D2 · Convert the claims</strong> <em>(grounded explanation)</em></p>
@@ -470,7 +462,7 @@ body.mode-scroll #deck{display:none}
 <p><em>Commit before reading each correction. The spanning case and the small-but-A case are where the misjudgements live.</em></p>
 <p><strong>D5 · Audit my tests</strong> <em>(audit)</em></p>
 <blockquote>
-<p>List every test in my project. For each: one line on the claim it checks, and one specific change to the code that would make it fail. Flag every test where you can’t name such a change, and every test that passes on an empty result. Then list the tier A and tier B behaviour in my project that no test covers. Full table, no summarizing.</p>
+<p>If my project has no tests, say so, then write one: an assertion that a signed-in user requesting another user’s row gets nothing, and show me how to run it. Otherwise: list every test in my project. For each: one line on the claim it checks, and one specific change to the code that would make it fail. Flag every test where you can’t name such a change, and every test that passes on an empty result. Then list the tier A and tier B behaviour in my project that no test covers. Full table, no summarizing.</p>
 </blockquote>
 <p><em>A good response names a breaking change per test, and the flags are tests that measure something adjacent to their name. The last list is the worklist: any tier A row on it is a claim held at level 1 on the day it was checked and at level 4 every day since.</em></p>
 <hr />

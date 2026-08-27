@@ -255,7 +255,7 @@ body.mode-scroll #deck{display:none}
  "diagStroke": 1.75,
  "diagFs": 15
 }</script>
-<script id="nav" type="application/json">{"index":"index.html","prev":null,"next":{"href":"chapter-02-data-modelling.html","num":"02","title":"Data modelling"}}</script>
+<script id="nav" type="application/json">{"index":"index.html","prev":{"href":"chapter-00-the-toolkit.html","num":"00","title":"The toolkit"},"next":{"href":"chapter-02-data-modelling.html","num":"02","title":"Data modelling"}}</script>
 </head>
 <body class="rail-style-line card-style-tint">
 <div id="src"><h1 id="chapter-1-client-and-server">Chapter 1 — Client and server</h1>
@@ -269,7 +269,7 @@ body.mode-scroll #deck{display:none}
 <h2 id="the-visitors-side">The visitor’s side</h2>
 <p>When someone opens your app, their browser downloads your interface code — the pages, the buttons, the checks around them — and runs it on their machine. From that moment that copy is theirs to inspect and change, since it’s running on hardware you have no access to.</p>
 <p>Every browser ships with developer tools that make this concrete: a panel that shows the downloaded code, a console that runs arbitrary commands against the open page, and a network tab that lists every request the page sends. This is standard equipment for building and debugging the web.</p>
-<p>Your side is the server and the database behind it. Visitors can send requests to your side, and that is the whole of what they can do to it — which is why it’s the only place a rule binds.</p>
+<p>Your side is the server and the database behind it. Visitors can send requests to your side, and that is the whole of what they can do to it — which is why it’s the only place a rule binds. The line between the two sides is the <strong>trust boundary</strong>: what’s on your side of it you can rely on, and what’s on the other side you can’t.</p>
 <figure class="diagram-fig"><svg aria-label="two sides separated by a dashed line labelled “the wire”. Visitor’s side: browser holding “your interface code (their copy)”, devtools, console. Your side: server, then database. A single arrow crosses the line, labelled “requests — the only traffic”." xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 340" role="img">
   <defs>
     <marker id="ah1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="ah" d="M0 0 L10 5 L0 10 z"/></marker>
@@ -313,7 +313,7 @@ body.mode-scroll #deck{display:none}
 <p><strong>An environment variable</strong> is a named value a process is handed at startup, kept outside the code. It’s where configuration and keys live, and chapter 7 is about what belongs there.</p>
 <p><strong>A port</strong> is a numbered door on a machine where a process listens for requests. <code>localhost:3000</code> means “the process listening on door 3000 of this machine” — the address of your own app while you build it.</p>
 <h2 id="what-people-mean-by-a-stack">What people mean by “a stack”</h2>
-<p>A stack is a named set of choices: which language and framework on the server, which database, which host. The word matters to you for one practical reason — assistants have defaults, advice transfers within a stack much better than across, and knowing your stack’s names lets you ask questions that get answers about your actual setup rather than about the general case.</p>
+<p>A stack is a named set of choices: which language and framework on the server, which database, which host. The word matters to you for one practical reason — assistants have defaults, advice transfers within a stack much better than across, and knowing your stack’s names lets you ask questions that get answers about your actual setup rather than about the general case. Chapter 0’s first prompt gets you the names for yours.</p>
 <hr />
 <h1 id="what-goes-wrong">What goes wrong</h1>
 <p>The three entries here are instances of one failure: something the server needed to do itself, done only on the visitor’s side.</p>
@@ -336,7 +336,7 @@ body.mode-scroll #deck{display:none}
 <strong>Check:</strong> send the request with the value changed — a total of zero, a role of admin — and read the row that results.</p>
 </blockquote>
 <h2 id="the-direct-test">The direct test</h2>
-<p>Open the network tab, use your own form once, and find the request it sent. Copy it into the console, change one value to something the form forbids, and send it. A rejection tells you which server-side rule caught it; success tells you the rule you thought you had lives only in the form. The whole test takes about ten minutes.</p>
+<p>Open the network tab, use your own form once, and find the request it sent. Copy it into the console, change one value to something the form forbids, and send it. A rejection tells you which server-side rule caught it; success tells you the rule you thought you had lives only in the form. The whole test takes about ten minutes, and if you’ve never opened the network tab, chapter 0’s D2 prompt has your assistant walk you through it once.</p>
 <hr />
 <h1 id="going-deeper">Going deeper</h1>
 <p>These prompts are for your assistant, and each comes with a note on what a good response looks like. If you get prose instead of the artifact, re-ask insisting on the list.</p>
@@ -362,7 +362,7 @@ body.mode-scroll #deck{display:none}
 <p><em>Commit to each answer before reading the correction — a wrong prediction points at the specific part of the picture that needs fixing.</em></p>
 <hr />
 <h2 id="where-this-connects">Where this connects</h2>
-<p><strong>Chapter 6 · Authorization</strong> applies this picture to who-can-see-what — its four-places table is this chapter’s boundary with names on it. <strong>Chapter 7 · Secrets and configuration</strong> applies it to keys, where crossing the line is a one-way trip. <strong>Chapter 3 · Source of truth</strong> picks up what happens to data once both sides hold copies of it. <strong>Chapter 8 · Injection</strong> covers the other thing a request can carry: text that becomes code on your side. <strong>Chapter 12 · Verification</strong> is the method every going-deeper section in this series uses; if you’re already shipping, read it next.</p>
+<p><strong>Chapter 6 · Authorization</strong> applies this picture to who-can-see-what — its four-places table is this chapter’s boundary with names on it. <strong>Chapter 7 · Secrets and configuration</strong> applies it to keys, where crossing the line is a one-way trip. <strong>Chapter 3 · Source of truth</strong> picks up what happens to data once both sides hold copies of it. <strong>Chapter 8 · Injection</strong> covers the other thing a request can carry: text that becomes code on your side. <strong>Chapter 0 · The toolkit</strong> holds the re-send prompt this chapter’s checks use. If you’re already shipping and something has worried you, <strong>chapter 6 · Authorization</strong> is the one to read next.</p>
 </div>
 <div id="deck"></div>
 <div id="panel" class="hidden"></div>

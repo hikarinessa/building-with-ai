@@ -342,7 +342,7 @@ body.mode-scroll #deck{display:none}
 </svg></figure>
 <p>The first two are worth having, since an interface that shows buttons which always fail is confusing to use. They just don’t survive a request that skips the interface, and skipping it takes one line in a browser console.</p>
 <p>The gap between the last two is narrower and matters more. A check in a request handler covers that handler, so it won’t apply to a second one added next month that touches the same table, or to a background job, or to an endpoint your assistant adds while you skim the summary. A policy in the database covers paths that don’t exist yet, which is why it’s usually the one to want first.</p>
-<p><strong>When your database has no policies.</strong> Row-level policies are a feature of some databases and the default convention on platforms built around them; this chapter’s examples use Supabase. On a stack where the server talks to the database with one shared credential — most frameworks with their own data layer — the database never learns who the user is, and the server check is the real one. The model still holds: the check belongs in the layer every path passes through. There, that means one place — a scoped query helper, a data-access module, a middleware — that every route and every job goes through, so that a route added next month inherits it. The failing shape is the same as here: a check written into one handler and absent from the next.</p>
+<p><strong>When your database has no policies.</strong> Row-level policies are a feature of some databases and the default convention on platforms built around them; this chapter’s examples use Supabase. On a stack where the server talks to the database with one shared credential — most frameworks with their own data layer — the database never learns who the user is, and the server check is the real one. The model still holds: the check belongs in the layer every path passes through. There, that means one place — a scoped query helper, a data-access module, a middleware — that every route and every job goes through, so that a route added next month inherits it. The failing shape is the same as here: a check written into one handler and absent from the next. Databases without row policies at all — MySQL, most document stores — put the whole chapter on that server layer, and shape 3’s ask becomes “for each table, what enforces ownership on each of the four operations.”</p>
 <h2 id="what-a-database-policy-is">What a database policy is</h2>
 <p>A row-level security policy is a filter the database itself attaches to every query that touches a table — a condition like <em>the row’s owner must be the person asking</em>. The caller can’t remove it, because it never appears in anything they send; the database adds it on arrival, whatever the request looked like.</p>
 <p>Three things about policies are worth knowing even at this altitude:</p>
@@ -372,7 +372,7 @@ body.mode-scroll #deck{display:none}
 <p><strong>1 · The UI-only gate</strong> — the button is hidden and the endpoint is open.<br />
 <em>Tell:</em> the only mention of a role or permission sits in interface code.<br />
 <strong>Ask:</strong> “For each action in this feature, state every place it’s enforced: interface, browser code, server, database policy. Flag any action whose only enforcement is in the first two.”<br />
-<strong>Check:</strong> send the request the hidden button would have sent, from a browser console, and see whether it succeeds.</p>
+<strong>Check:</strong> send the request the hidden button would have sent, from a browser console (chapter 0, D2), and see whether it succeeds.</p>
 </blockquote>
 <blockquote>
 <p><strong>2 · Authenticated but not authorized</strong> — the session is confirmed and ownership never is.<br />
@@ -390,7 +390,7 @@ body.mode-scroll #deck{display:none}
 <p><strong>4 · The master key used to clear an error</strong> — a permissions error blocks progress and the privileged credential makes it go away.<br />
 <em>Tell:</em> a service or admin credential in a file the browser can reach, or a commit that fixes a permissions error without touching a policy.<br />
 <strong>Ask:</strong> “List every place a privileged key is used, and for each, why the request can’t work with the public key.”<br />
-<strong>Check:</strong> search the built client bundle for the key’s value. If it was ever in the browser, rotate it — whether anyone found it is a separate question from whether the door was open.</p>
+<strong>Check:</strong> search the built client bundle for the key’s value (chapter 0’s D3 prompt builds it and searches). If it was ever in the browser, rotate it — whether anyone found it is a separate question from whether the door was open.</p>
 </blockquote>
 <blockquote>
 <p><strong>5 · Partial coverage</strong> — reads are restricted and writes are open, or updates are checked on the way in and nothing examines where the row lands.<br />
@@ -450,7 +450,7 @@ body.mode-scroll #deck{display:none}
 </blockquote>
 <p><em>Commit to each answer before reading the correction — a wrong prediction points at the specific part of your picture that needs fixing, which reading rarely surfaces on its own.</em></p>
 <p><strong>D5 · Set the house rules</strong> <em>(build a toy)</em></p>
-<p>Put this in the instructions file your assistant reads (<code>CLAUDE.md</code>, <code>AGENTS.md</code>, or your tool’s equivalent), then re-run a recent feature request in a fresh session and compare what comes back against what you originally merged:</p>
+<p>Put this in the instructions file your assistant reads (<code>CLAUDE.md</code>, <code>AGENTS.md</code>, <code>.cursor/rules</code>, or your tool’s equivalent — chapter 0’s D4 names it), then re-run a recent feature request in a fresh session and compare what comes back against what you originally merged:</p>
 <blockquote>
 <ul>
 <li>Every new table gets row-level security enabled in the same migration that creates it, plus explicit policies for read, insert, update, delete.</li>
@@ -465,7 +465,7 @@ body.mode-scroll #deck{display:none}
 <hr />
 <h2 id="where-this-connects">Where this connects</h2>
 <p><strong>Chapter 1 · Client and server</strong> is the model this chapter stands on. <strong>Chapter 7 · Secrets and configuration</strong> picks up the master key — shape 4 is where the two chapters meet. <strong>Chapter 8 · Injection</strong> covers what a request’s text can make your side do once it’s past the check. <strong>Chapter 12 · Verification</strong> generalizes the ask-and-check method used here to every surface.</p>
-<p><strong>The full-depth version</strong> of this chapter exists as a five-sitting lab manual — you build a small multi-user project, break it, protect it, and write real policies against a checker that passes or fails. Worth doing if your project holds other people’s data; the manual assumes no programming experience.</p>
+<p><strong>The full-depth version</strong> of this chapter exists as <a href="authorization-lab-manual.pdf">a five-sitting lab manual</a> — you build a small multi-user project, break it, protect it, and write real policies against a checker that passes or fails. Worth doing if your project holds other people’s data; the manual assumes no programming experience.</p>
 </div>
 <div id="deck"></div>
 <div id="panel" class="hidden"></div>

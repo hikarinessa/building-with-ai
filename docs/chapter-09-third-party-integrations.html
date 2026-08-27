@@ -305,6 +305,8 @@ body.mode-scroll #deck{display:none}
 <p>Retries, timeouts, double-clicks, and webhook redeliveries all mean the same creating call can be sent more than once. Run naively, a call sent twice does its work twice: two charges, two records, two emails. The guard is the <strong>idempotency key</strong> from chapter 3, applied across the boundary: you supply an identifier with the call, and the receiving service treats any repeat carrying the same identifier as the same operation. Payment providers support this in their APIs precisely because the double-charge is that common; using it is a decision your integration code either made or didn’t, which makes it askable.</p>
 <h2 id="rate-limits">Rate limits</h2>
 <p>Services cap how often you may call them, and reaching the cap is a normal operating state rather than an error: the correct responses are backing off, queueing the work (chapter 4), or spreading it out. Code that treats a rate-limit response as a crash converts a routine throttle into an outage. The mirror — capping how often others may call <em>your</em> endpoints, which is what keeps a paid call from becoming a bill — is chapter 4’s unmetered-endpoint entry.</p>
+<h2 id="what-they-charge">What they charge</h2>
+<p>Most rented services bill per call or per unit — a message, a lookup, a thousand tokens — and a surprise bill is this chapter’s failure arriving as money: a call made more often than the code suggested, a key used by someone who found it, a free tier that ended. Three things settle it, and each is a line on the provider’s dashboard: what one call costs, what cap the service lets you set, and what alerts you before the cap is reached. A service with no cap set will let a bug or a stranger run up whatever the month allows.</p>
 <h2 id="change-on-their-schedule">Change on their schedule</h2>
 <p>An external service changes on its own timeline: versions, deprecations, new required fields. A dependency therefore costs more than the integration work — it adds their calendar to yours, and eventually a migration. This is the real weight behind “should we add this service,” and it’s a chapter 12 tier question as much as a technical one.</p>
 <h2 id="their-calls-to-you">Their calls to you</h2>
@@ -328,6 +330,12 @@ body.mode-scroll #deck{display:none}
 <strong>Check:</strong> run it twice with the same input and count what exists afterwards.</p>
 </blockquote>
 <blockquote>
+<p><strong>The uncapped service</strong> — a paid call with no ceiling on what it can cost you.<br />
+<em>Tell:</em> no spending limit and no budget alert on the provider’s side; a bill you couldn’t have predicted from the code.<br />
+<strong>Ask:</strong> “For each paid service, state what one call costs, what we spent last month, what cap is set on the provider’s side, and what alerts before it. Say none explicitly.”<br />
+<strong>Check:</strong> the provider’s billing page — last month’s number against what you expected.</p>
+</blockquote>
+<blockquote>
 <p><strong>The unexamined dependency</strong> — a library added to do one thing, with nobody having asked what else it does or who maintains it.<br />
 <em>Tell:</em> new entries in the dependency list that the summary never mentioned; a package imported for a single function.<br />
 <strong>Ask:</strong> “List every dependency this change added, with what it’s used for, whether the project could do the same without it, and when it was last published. Flag anything used for one function and anything not published in the last year.”<br />
@@ -340,13 +348,13 @@ body.mode-scroll #deck{display:none}
 <strong>Check:</strong> the request body of one call, read in the network tab or the server log, against what the service does with it.</p>
 </blockquote>
 <h2 id="the-direct-test">The direct test</h2>
-<p>Point one integration at an address that doesn’t answer and use the feature as a user would. What the screen does while nothing comes back, and what state the data is in afterwards, is your app’s actual partial-failure behaviour.</p>
+<p>Point one integration at an address that doesn’t answer — in a test copy (chapter 0, D1), with the assistant making the change and undoing it, as D3 below sets up — and use the feature as a user would. What the screen does while nothing comes back, and what state the data is in afterwards, is your app’s actual partial-failure behaviour.</p>
 <hr />
 <h1 id="going-deeper">Going deeper</h1>
 <p>These prompts are for your assistant, and each comes with a note on what a good response looks like.</p>
 <p><strong>D1 · The integration inventory</strong> <em>(audit)</em></p>
 <blockquote>
-<p>List every external service my app calls, and every call to it. For each call: the timeout, the retry policy, the backoff, whether an idempotency key is used, which fields about a person it sends, and what the user sees when the call fails. Full table; write none where the answer is none.</p>
+<p>List every external service my app calls, and every call to it. For each call: the timeout, the retry policy, the backoff, whether an idempotency key is used, which fields about a person it sends, what one call costs and what cap or alert is set on it, and what the user sees when the call fails. Full table; write none where the answer is none.</p>
 </blockquote>
 <p><em>A good response is a table with honest nones — a young integration usually has a row that reads none, none, none, and that row is the worklist. Follow up on any creating call without a key: “show me what two of these would look like in the data.”</em></p>
 <p><strong>D2 · Walk the unknown outcome</strong> <em>(walk the failure path)</em></p>
