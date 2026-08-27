@@ -89,6 +89,8 @@ for (const c of selected) {
 
 // ---------- index ----------
 const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+let bodyFont = 'Petrona';
+try { bodyFont = JSON.parse(settings).fontBody || bodyFont; } catch {}
 const cards = all.map(c => {
   const pdf = existsSync(resolve(outDir, c.out + '.pdf')) ? `<a class="pdf" href="${c.out}.pdf">PDF</a>` : '';
   const direct = c.direct ? `<span class="d"><span class="dk">Direct test</span>${esc(c.direct)}</span>` : '';
@@ -98,14 +100,14 @@ const index = `<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Building with AI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&family=Charis+SIL:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&family=${encodeURIComponent(bodyFont).replace(/%20/g, '+')}:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
 <style>
 :root{--paper:#FBFAF7;--ink:#1E2226;--accent:#2E6F73;--accent2:#A0522D;--muted:#6B7075;--rule:#D9D6CF;--tint:color-mix(in srgb,var(--accent) 7%,var(--paper))}
 :root[data-theme=dark]{--paper:#14181C;--ink:#E8E6E1;--accent:#6FC3C9;--accent2:#E0A070;--muted:#9AA0A6;--rule:#2C3238}
 .themetoggle{position:fixed;top:1rem;right:1.2rem;z-index:5;font-family:Poppins,system-ui,sans-serif;font-size:.72rem;letter-spacing:.06em;color:var(--accent);background:var(--paper);border:1px solid var(--rule);border-radius:999px;padding:.4em .9em;cursor:pointer;line-height:1.4}
 .themetoggle:hover{border-color:var(--accent)}
 *{box-sizing:border-box}
-body{margin:0;background:var(--paper);color:var(--ink);font:19px/1.5 "Charis SIL","Charter","Source Serif 4",Georgia,serif;-webkit-font-smoothing:antialiased}
+body{margin:0;background:var(--paper);color:var(--ink);font:20px/1.5 "${bodyFont}","Charis SIL",Georgia,serif;-webkit-font-smoothing:antialiased}
 main{max-width:1180px;margin:0 auto;padding:4rem 2.5rem 6rem}
 .series{font-family:Poppins,system-ui,sans-serif;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-weight:500}
 h1{font-family:Poppins,system-ui,sans-serif;font-weight:500;font-size:3rem;letter-spacing:-.01em;margin:.4rem 0 .6rem;line-height:1.1}

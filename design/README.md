@@ -24,7 +24,7 @@ node design/build.mjs --pdf      # also a PDF per chapter via headless Chrome
 node design/build.mjs --pdf chapters/chapter-02-shape-of-data.md   # one chapter
 ```
 
-Build renders ignore the browser's saved theme and the system appearance; they use `design/settings.json` only. Output names come from the chapter heading: `chapter-06-authorization.html` / `.pdf`. Fonts load from Google Fonts at render time (Poppins, Charis SIL, Manrope, Inter, Instrument Sans, DM Sans, Space Grotesk, Source Serif 4, Literata, Newsreader, Spectral, JetBrains Mono); Charter and Menlo are offered in the panel and resolve only on macOS. The body default is Charis SIL, SIL's extension of Bitstream Charter, so the pages look the same on every platform.
+Build renders ignore the browser's saved theme and the system appearance; they use `design/settings.json` only. Output names come from the chapter heading: `chapter-06-authorization.html` / `.pdf`. Fonts load from Google Fonts at render time (Poppins, Petrona, Charis SIL, Manrope, Inter, Instrument Sans, DM Sans, Space Grotesk, Source Serif 4, Literata, Newsreader, Spectral, JetBrains Mono); Menlo is the one panel option that resolves only on macOS, with JetBrains Mono as the loaded alternative. The body default is Petrona, with Charis SIL as the fallback.
 
 ## How the template reads a chapter
 

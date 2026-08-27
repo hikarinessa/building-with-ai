@@ -8,7 +8,7 @@ A course for people who build software with AI assistance and don't read code. T
 - `tone-of-voice.md` — governs all prose, headings and subtitles included. Read it before writing or editing a chapter.
 - `chapters/chapter-NN-slug.md` — the twelve chapters, one file each, numbered 01–12.
 - `design/` — the rendering pipeline: `template.html` (one file, scroll view for screen + paged view for print, with a live control panel), `build.mjs`, `settings.json` (the baked-in design defaults), `README.md` (how to read, tune, build, host). `docs/` is the generated output, served by GitHub Pages from `main` — never edit it by hand; rebuild and commit.
-- `reference/authorization-lab-manual.pdf` — the earlier five-sitting lab manual on authorization. It's the depth track chapter 6 points to and the typographic reference (Poppins headings, Charter body — rendered as Charis SIL, Charter's open-source descendant, so it's the same on every platform).
+- `reference/authorization-lab-manual.pdf` — the earlier five-sitting lab manual on authorization. It's the depth track chapter 6 points to and the typographic reference (Poppins headings; the pages set body text in Petrona).
 - `archive/` — superseded curriculum drafts, kept for history only. Nothing current depends on them.
 
 ## Workflow
