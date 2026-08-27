@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 350" role="img">
+  <defs>
+    <marker id="ah7" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="ah" d="M0 0 L10 5 L0 10 z"/></marker>
+  </defs>
+  <text class="lab" x="40" y="30">the one-way door</text>
+  <!-- server side env vars -->
+  <rect class="box" x="40" y="60" width="260" height="200" rx="8"/>
+  <text x="170" y="88" text-anchor="middle">environment variables</text>
+  <text class="mu" x="170" y="106" text-anchor="middle">on your side</text>
+  <rect class="box tint" x="60" y="124" width="220" height="30" rx="4"/>
+  <text class="mono" x="70" y="144">DATABASE_URL</text>
+  <rect class="box tint" x="60" y="164" width="220" height="30" rx="4"/>
+  <text class="mono" x="70" y="184">SERVICE_KEY</text>
+  <rect class="box ac" x="60" y="204" width="220" height="30" rx="4"/>
+  <text class="mono ac" x="70" y="224">NEXT_PUBLIC_MAPS_KEY</text>
+  <!-- the door -->
+  <text class="ac" x="360" y="50" text-anchor="middle">the public prefix</text>
+  <line class="ln ac dash" x1="360" y1="60" x2="360" y2="270"/>
+  <path class="ln ac" d="M340 200 L340 240 L380 240 L380 200 A20 20 0 0 0 340 200 z" fill="none"/>
+  <line class="ln ac" x1="280" y1="219" x2="338" y2="219"/>
+  <line class="ln ac" x1="382" y1="219" x2="428" y2="219" marker-end="url(#ah7)"/>
+  <!-- bundle -->
+  <rect class="box ac" x="430" y="190" width="150" height="58" rx="6"/>
+  <text x="505" y="215" text-anchor="middle">client bundle</text>
+  <text class="mu" x="505" y="235" text-anchor="middle">every visitor downloads</text>
+  <!-- fan out -->
+  <line class="ln mu" x1="580" y1="205" x2="648" y2="118" marker-end="url(#ah7)"/>
+  <line class="ln mu" x1="580" y1="219" x2="648" y2="219" marker-end="url(#ah7)"/>
+  <line class="ln mu" x1="580" y1="233" x2="648" y2="298" marker-end="url(#ah7)"/>
+  <text x="660" y="114">browsers</text>
+  <text class="mu" x="660" y="134">and their users</text>
+  <text x="660" y="223">caches</text>
+  <text class="mu" x="660" y="243">that keep old builds</text>
+  <text x="660" y="304">archives</text>
+  <text class="mu" x="660" y="324">that never forget</text>
+  <!-- no way back -->
+  <path class="ln mu dash" d="M440 250 C400 310, 250 310, 176 262" fill="none" marker-end="url(#ah7)"/>
+  <line class="ln ac" x1="298" y1="284" x2="318" y2="304"/>
+  <line class="ln ac" x1="318" y1="284" x2="298" y2="304"/>
+  <text class="mu" x="308" y="334" text-anchor="middle">no way back — a value taken out of the next build is already in every copy</text>
+</svg>

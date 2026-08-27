@@ -57,7 +57,18 @@ for (const c of selected) {
   const idx = all.indexOf(c);
   const link = x => x ? { href: x.out + '.html', num: x.num, title: x.title } : null;
   const nav = { index: 'index.html', prev: link(all[idx - 1]), next: link(all[idx + 1]) };
-  const body = execFileSync('pandoc', [c.src, '-f', 'markdown+hard_line_breaks', '-t', 'html', '--wrap=none', '--syntax-highlighting=none'], { encoding: 'utf8' });
+  const raw = execFileSync('pandoc', [c.src, '-f', 'markdown+hard_line_breaks', '-t', 'html', '--wrap=none', '--syntax-highlighting=none'], { encoding: 'utf8' });
+  // inline the chapter's diagrams: the k-th [DIAGRAM: …] marker takes design/diagrams/NN.svg (NN-k.svg for k > 1);
+  // a marker with no file keeps the placeholder box.
+  let k = 0;
+  const body = raw.replace(/<p>\[DIAGRAM:([\s\S]*?)\]<\/p>/g, (m, cap) => {
+    k++;
+    const f = resolve(here, 'diagrams', `${c.num}${k > 1 ? '-' + k : ''}.svg`);
+    if (!existsSync(f)) return m;
+    const label = cap.replace(/<[^>]+>/g, '').replace(/["\n]+/g, ' ').trim();
+    const svg = readFileSync(f, 'utf8').trim().replace(/^<svg /, `<svg aria-label="${label}" `);
+    return `<figure class="diagram-fig">${svg}</figure>`;
+  });
   const html = template
     .replace('<!--TITLE-->', () => `${c.num} · ${c.title}`)
     .replace('<!--SETTINGS-->', () => settings)

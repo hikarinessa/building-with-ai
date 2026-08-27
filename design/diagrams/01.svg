@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 340" role="img">
+  <defs>
+    <marker id="ah1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="ah" d="M0 0 L10 5 L0 10 z"/></marker>
+  </defs>
+  <!-- side labels -->
+  <text class="lab" x="200" y="28" text-anchor="middle">The visitor's side — their machine</text>
+  <text class="lab" x="600" y="28" text-anchor="middle">Your side — machines you control</text>
+  <!-- the wire -->
+  <line class="ln ac dash" x1="400" y1="44" x2="400" y2="318"/>
+  <text class="ac" x="400" y="334" text-anchor="middle">the wire</text>
+  <!-- browser -->
+  <rect class="box" x="60" y="60" width="280" height="190" rx="8"/>
+  <text x="200" y="88" text-anchor="middle">Browser</text>
+  <rect class="box tint" x="72" y="104" width="256" height="58" rx="6"/>
+  <text x="200" y="128" text-anchor="middle">your interface code</text>
+  <text class="mu" x="200" y="150" text-anchor="middle">their copy — theirs to read and change</text>
+  <text class="mu" x="200" y="192" text-anchor="middle">devtools · console · network tab</text>
+  <text class="mu" x="200" y="214" text-anchor="middle">re-send any request, with fields changed</text>
+  <!-- server and database -->
+  <rect class="box ac" x="470" y="86" width="140" height="64" rx="8"/>
+  <text x="540" y="124" text-anchor="middle">Server</text>
+  <rect class="box ac" x="470" y="200" width="140" height="64" rx="8"/>
+  <text x="540" y="238" text-anchor="middle">Database</text>
+  <line class="ln" x1="540" y1="150" x2="540" y2="198" marker-end="url(#ah1)"/>
+  <text class="mu" x="700" y="180" text-anchor="middle">rules bind here,</text>
+  <text class="mu" x="700" y="200" text-anchor="middle">on every request</text>
+  <!-- the only traffic -->
+  <line class="ln" x1="340" y1="118" x2="468" y2="118" marker-end="url(#ah1)"/>
+  <text class="ac" x="404" y="106" text-anchor="middle">requests</text>
+  <text class="mu" x="200" y="284" text-anchor="middle">the only traffic that crosses,</text>
+  <text class="mu" x="200" y="302" text-anchor="middle">and anyone can compose one</text>
+</svg>

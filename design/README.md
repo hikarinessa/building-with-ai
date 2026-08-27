@@ -32,7 +32,7 @@ Build renders ignore the browser's saved theme and the system appearance; they u
 - Each later `#` heading is a part; `##` headings are sections. Both appear in the rail.
 - Blockquote entries (`**Name** — gist` then `*Tell:*`, `**Ask:**`, `**Check:**` lines) become numbered cards in a two-column grid. The tell renders last and muted whatever its position in the markdown, since it's the field that needs a look at code; ask and check come first. `## The direct test` becomes the outlined box; `## Where this connects` becomes the footer.
 - `**D1 · Title** *(shape)*`, followed by a blockquote (optionally with one lead-in paragraph between) and an italic note, becomes a prompt card with its note beside it and a Copy button.
-- `[DIAGRAM: …]` renders as a placeholder box until the diagram exists.
+- `[DIAGRAM: …]` is replaced at build time by `design/diagrams/NN.svg` (the chapter number; `NN-2.svg` for a second marker in the same chapter), inlined so it follows the theme and the panel. A marker with no file renders as a placeholder box. The SVGs carry no colours or fonts of their own: lines are `class="ln"` (`ac` accent, `mu` muted, `dash`), shapes `class="box"` (`ac`, `tint`, `dash`), filled cells `fill-ac`, text plain / `mu` / `ac` / `lab` (small caps label) / `mono` / `onac` (on an accent fill), arrowheads `ah`. The Diagrams panel group sets width, stroke weight and label size.
 
 ## Hosting
 

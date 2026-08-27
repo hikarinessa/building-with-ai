@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 320" role="img">
+  <defs>
+    <marker id="ah6" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="ah" d="M0 0 L10 5 L0 10 z"/></marker>
+  </defs>
+  <text class="lab" x="40" y="30">the four places a check can live</text>
+  <!-- the four boxes -->
+  <rect class="box dash" x="60" y="130" width="130" height="64" rx="6"/>
+  <text x="125" y="158" text-anchor="middle">interface</text>
+  <text class="mu" x="125" y="178" text-anchor="middle">button hidden</text>
+  <rect class="box dash" x="220" y="130" width="130" height="64" rx="6"/>
+  <text x="285" y="158" text-anchor="middle">browser code</text>
+  <text class="mu" x="285" y="178" text-anchor="middle">an if around it</text>
+  <rect class="box ac" x="420" y="130" width="130" height="64" rx="6"/>
+  <text x="485" y="158" text-anchor="middle">server</text>
+  <text class="mu sm" x="485" y="178" text-anchor="middle">check in the handler</text>
+  <rect class="box ac" x="580" y="130" width="130" height="64" rx="6"/>
+  <text x="645" y="158" text-anchor="middle">database</text>
+  <text class="mu" x="645" y="178" text-anchor="middle">policy on the row</text>
+  <rect class="box tint" x="740" y="146" width="40" height="32" rx="4"/>
+  <text class="mu" x="760" y="214" text-anchor="middle">the row</text>
+  <!-- fake / real -->
+  <text class="mu" x="205" y="232" text-anchor="middle">only run if the visitor chooses to</text>
+  <text class="ac" x="565" y="232" text-anchor="middle">every request passes through</text>
+  <!-- the wire -->
+  <line class="ln ac dash" x1="385" y1="60" x2="385" y2="260"/>
+  <!-- request via the form -->
+  <line class="ln mu" x1="20" y1="162" x2="738" y2="162"/>
+  <text class="mu" x="20" y="122">via the form</text>
+  <!-- request by hand -->
+  <path class="ln" d="M30 290 C120 290, 200 90, 418 148" fill="none" marker-end="url(#ah6)"/>
+  <text x="60" y="310">sent by hand</text>
+  <text class="mu" x="230" y="100" text-anchor="middle">skips the first two</text>
+</svg>

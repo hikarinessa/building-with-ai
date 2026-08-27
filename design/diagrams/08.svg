@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 340" role="img">
+  <defs>
+    <marker id="ah8" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="ah" d="M0 0 L10 5 L0 10 z"/></marker>
+  </defs>
+  <text class="lab" x="40" y="30">three interpreters, one kind of input</text>
+  <!-- column 1: database -->
+  <text x="150" y="78" text-anchor="middle">a query</text>
+  <rect class="box" x="60" y="92" width="60" height="40" rx="3"/>
+  <rect class="box ac tint" x="120" y="92" width="60" height="40" rx="3"/>
+  <rect class="box" x="180" y="92" width="60" height="40" rx="3"/>
+  <text class="mu" x="78" y="152" text-anchor="middle">yours</text>
+  <text class="ac" x="150" y="152" text-anchor="middle">the visitor's</text>
+  <text class="mu" x="222" y="152" text-anchor="middle">yours</text>
+  <line class="ln" x1="150" y1="164" x2="150" y2="206" marker-end="url(#ah8)"/>
+  <rect class="box" x="70" y="210" width="160" height="60" rx="8"/>
+  <text x="150" y="246" text-anchor="middle">database</text>
+  <!-- column 2: browser -->
+  <text x="400" y="78" text-anchor="middle">a page</text>
+  <rect class="box" x="310" y="92" width="60" height="40" rx="3"/>
+  <rect class="box ac tint" x="370" y="92" width="60" height="40" rx="3"/>
+  <rect class="box" x="430" y="92" width="60" height="40" rx="3"/>
+  <text class="mu" x="328" y="152" text-anchor="middle">yours</text>
+  <text class="ac" x="400" y="152" text-anchor="middle">the visitor's</text>
+  <text class="mu" x="472" y="152" text-anchor="middle">yours</text>
+  <line class="ln" x1="400" y1="164" x2="400" y2="206" marker-end="url(#ah8)"/>
+  <rect class="box" x="320" y="210" width="160" height="60" rx="8"/>
+  <text x="400" y="246" text-anchor="middle">browser</text>
+  <!-- column 3: model -->
+  <text x="650" y="78" text-anchor="middle">a prompt</text>
+  <rect class="box" x="560" y="92" width="60" height="40" rx="3"/>
+  <rect class="box ac tint" x="620" y="92" width="60" height="40" rx="3"/>
+  <rect class="box" x="680" y="92" width="60" height="40" rx="3"/>
+  <text class="mu" x="578" y="152" text-anchor="middle">yours</text>
+  <text class="ac" x="650" y="152" text-anchor="middle">the visitor's</text>
+  <text class="mu" x="722" y="152" text-anchor="middle">yours</text>
+  <line class="ln" x1="650" y1="164" x2="650" y2="206" marker-end="url(#ah8)"/>
+  <rect class="box" x="570" y="210" width="160" height="60" rx="8"/>
+  <text x="650" y="246" text-anchor="middle">language model</text>
+  <!-- the shared fact -->
+  <text class="mu" x="400" y="310" text-anchor="middle">each reads the whole text the same way — nothing marks where the visitor's part begins and ends</text>
+</svg>

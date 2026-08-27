@@ -16,6 +16,7 @@
   --paper:#FBFAF7; --ink:#1E2226; --accent:#2E6F73; --accent2:#A0522D; --muted:#6B7075; --rule:#D9D6CF;
   --radius:6px; --card-scale:.9; --tint:color-mix(in srgb,var(--accent) 7%,var(--paper)); --tint2:color-mix(in srgb,var(--accent2) 8%,var(--paper));
   --label-fs:calc(var(--fs) * 0.58);
+  --diag-w:100%; --diag-stroke:1.75px; --diag-fs:15px;
 }
 *{box-sizing:border-box}
 html,body{margin:0;background:#3a3d42}
@@ -133,6 +134,17 @@ td strong{font-family:var(--font-head);font-weight:500}
 /* ---------- misc blocks ---------- */
 .diagram{break-inside:avoid;margin:calc(var(--fs)*.3) 0 calc(var(--fs)*1);border:1.5px dashed var(--accent);border-radius:var(--radius);min-height:calc(var(--fs)*9);padding:calc(var(--fs)*.8) calc(var(--fs)*1);font-family:var(--font-mono);font-size:calc(var(--fs)*.7);color:var(--muted);background:var(--tint)}
 .diagram .k{font-family:var(--font-head);font-size:var(--label-fs);letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-weight:500;display:block;margin-bottom:.6em}
+.diagram-fig{break-inside:avoid;margin:calc(var(--fs)*.4) auto calc(var(--fs)*1.2);width:var(--diag-w);max-width:100%}
+.diagram-fig svg{display:block;width:100%;height:auto;font-family:var(--font-head);font-size:var(--diag-fs);font-weight:500}
+.diagram-fig .ln{fill:none;stroke:var(--ink);stroke-width:var(--diag-stroke);stroke-linecap:round;stroke-linejoin:round}
+.diagram-fig .ln.mu{stroke:var(--muted)}.diagram-fig .ln.ac{stroke:var(--accent)}.diagram-fig .dash{stroke-dasharray:6 5}
+.diagram-fig .box{fill:var(--paper);stroke:var(--ink);stroke-width:var(--diag-stroke)}
+.diagram-fig .box.dash{stroke:var(--muted)}.diagram-fig .box.tint{fill:var(--tint)}.diagram-fig .box.ac{stroke:var(--accent)}
+.diagram-fig .fill-ac{fill:var(--accent);stroke:none}.diagram-fig .ah{fill:var(--ink);stroke:none;fill:context-stroke}
+.diagram-fig text{fill:var(--ink)}.diagram-fig text.mu{fill:var(--muted);font-weight:400;font-size:calc(var(--diag-fs)*.88)}
+.diagram-fig text.sm{font-size:calc(var(--diag-fs)*.9)}.diagram-fig text.ac{fill:var(--accent)}.diagram-fig text.onac{fill:var(--paper);font-size:calc(var(--diag-fs)*.85)}
+.diagram-fig text.lab{fill:var(--accent);font-size:calc(var(--diag-fs)*.72);letter-spacing:.14em;text-transform:uppercase}
+.diagram-fig text.mono{font-family:var(--font-mono);font-size:calc(var(--diag-fs)*.85);font-weight:400}
 .quote{border-left:3px solid var(--rule);padding-left:1em;color:var(--muted);margin:0 0 calc(var(--fs)*.8)}
 .connects{border-top:1px solid var(--rule);padding-top:calc(var(--fs)*.9);margin-top:calc(var(--fs)*1);font-size:calc(var(--fs)*.9);color:var(--muted)}
 .connects .k{font-family:var(--font-head);font-size:var(--label-fs);letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-weight:500;display:block;margin-bottom:.6em}
@@ -237,7 +249,10 @@ body.mode-scroll #deck{display:none}
  "cardStyle": "tint",
  "radius": 6,
  "cardScale": 0.9,
- "fieldLayout": "runin"
+ "fieldLayout": "runin",
+ "diagW": 100,
+ "diagStroke": 1.75,
+ "diagFs": 15
 }</script>
 <script id="nav" type="application/json">{"index":"index.html","prev":{"href":"chapter-07-secrets-and-configuration.html","num":"07","title":"Secrets and configuration"},"next":{"href":"chapter-09-third-party-integrations.html","num":"09","title":"Third-party integrations"}}</script>
 </head>
@@ -251,7 +266,47 @@ body.mode-scroll #deck{display:none}
 <h2 id="one-channel-two-kinds-of-content">One channel, two kinds of content</h2>
 <p>Three systems in a typical app take text and act on it. The database takes a query — a sentence in its own language saying what to fetch or change. The browser takes a page — markup and script, which it renders and runs. A language model takes a prompt — text saying what to do. Each of these is an interpreter: it reads the text it’s given and does what the text says.</p>
 <p>Your code builds those texts, and part of what it builds them from is what users typed. A search term ends up inside the query; a comment ends up inside the page; a support message ends up inside the prompt. The interpreter receives one finished text and reads all of it the same way. It has no marking that says <em>this part was the developer’s, this part was the visitor’s</em> — unless your code put one there.</p>
-<p>[DIAGRAM: three interpreters in a row — database, browser, model — each receiving one block of text; the block shown as the developer’s text with a visitor’s fragment spliced into the middle, and the interpreter reading straight through the splice]</p>
+<figure class="diagram-fig"><svg aria-label="three interpreters in a row — database, browser, model — each receiving one block of text; the block shown as the developer’s text with a visitor’s fragment spliced into the middle, and the interpreter reading straight through the splice" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 340" role="img">
+  <defs>
+    <marker id="ah8" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="ah" d="M0 0 L10 5 L0 10 z"/></marker>
+  </defs>
+  <text class="lab" x="40" y="30">three interpreters, one kind of input</text>
+  <!-- column 1: database -->
+  <text x="150" y="78" text-anchor="middle">a query</text>
+  <rect class="box" x="60" y="92" width="60" height="40" rx="3"/>
+  <rect class="box ac tint" x="120" y="92" width="60" height="40" rx="3"/>
+  <rect class="box" x="180" y="92" width="60" height="40" rx="3"/>
+  <text class="mu" x="78" y="152" text-anchor="middle">yours</text>
+  <text class="ac" x="150" y="152" text-anchor="middle">the visitor's</text>
+  <text class="mu" x="222" y="152" text-anchor="middle">yours</text>
+  <line class="ln" x1="150" y1="164" x2="150" y2="206" marker-end="url(#ah8)"/>
+  <rect class="box" x="70" y="210" width="160" height="60" rx="8"/>
+  <text x="150" y="246" text-anchor="middle">database</text>
+  <!-- column 2: browser -->
+  <text x="400" y="78" text-anchor="middle">a page</text>
+  <rect class="box" x="310" y="92" width="60" height="40" rx="3"/>
+  <rect class="box ac tint" x="370" y="92" width="60" height="40" rx="3"/>
+  <rect class="box" x="430" y="92" width="60" height="40" rx="3"/>
+  <text class="mu" x="328" y="152" text-anchor="middle">yours</text>
+  <text class="ac" x="400" y="152" text-anchor="middle">the visitor's</text>
+  <text class="mu" x="472" y="152" text-anchor="middle">yours</text>
+  <line class="ln" x1="400" y1="164" x2="400" y2="206" marker-end="url(#ah8)"/>
+  <rect class="box" x="320" y="210" width="160" height="60" rx="8"/>
+  <text x="400" y="246" text-anchor="middle">browser</text>
+  <!-- column 3: model -->
+  <text x="650" y="78" text-anchor="middle">a prompt</text>
+  <rect class="box" x="560" y="92" width="60" height="40" rx="3"/>
+  <rect class="box ac tint" x="620" y="92" width="60" height="40" rx="3"/>
+  <rect class="box" x="680" y="92" width="60" height="40" rx="3"/>
+  <text class="mu" x="578" y="152" text-anchor="middle">yours</text>
+  <text class="ac" x="650" y="152" text-anchor="middle">the visitor's</text>
+  <text class="mu" x="722" y="152" text-anchor="middle">yours</text>
+  <line class="ln" x1="650" y1="164" x2="650" y2="206" marker-end="url(#ah8)"/>
+  <rect class="box" x="570" y="210" width="160" height="60" rx="8"/>
+  <text x="650" y="246" text-anchor="middle">language model</text>
+  <!-- the shared fact -->
+  <text class="mu" x="400" y="310" text-anchor="middle">each reads the whole text the same way — nothing marks where the visitor's part begins and ends</text>
+</svg></figure>
 <p>Where visitor text is spliced into an instruction with nothing marking the boundary, a visitor who writes text shaped like an instruction gets it carried out — by your database, in other visitors’ browsers, or by your model — with whatever permissions the interpreter has.</p>
 <h2 id="the-three-instances">The three instances</h2>
 <p><strong>Text into a query.</strong> A query assembled by concatenation — the fixed part, then the search term, then the rest — executes whatever the search term contains, including a second statement. The visitor’s search term can read every row of a table the query was meant to read one row of, or delete it. The name for this is SQL injection, and it has sat at or near the top of lists of web defects for two decades.</p>
@@ -341,7 +396,7 @@ const PRESETS={
   sample:{paper:'#FFFFFF',ink:'#111417',accent:'#1F6F78',accent2:'#A3432B',muted:'#5E6367',rule:'#DDDDDD'},
   slate:{paper:'#14181C',ink:'#E8E6E1',accent:'#6FC3C9',accent2:'#E0A070',muted:'#9AA0A6',rule:'#2C3238'}
 };
-const DEFAULTS={mode:'scroll',theme:'light',fsScreen:19,measureScreen:720,srailW:280,ratio:'16:9',cols:'2',partBreak:'auto',pad:96,railW:300,measure:880,gap:56,fs:24,lh:1.5,fontBody:'Charis SIL',fontHead:'Poppins',fontMono:'Menlo',headWeight:500,headTrack:-0.01,railStyle:'line',cardStyle:'tint',radius:6,cardScale:.9,fieldLayout:'runin',...PRESETS.paper};
+const DEFAULTS={mode:'scroll',theme:'light',fsScreen:19,measureScreen:720,srailW:280,ratio:'16:9',cols:'2',partBreak:'auto',pad:96,railW:300,measure:880,gap:56,fs:24,lh:1.5,fontBody:'Charis SIL',fontHead:'Poppins',fontMono:'Menlo',headWeight:500,headTrack:-0.01,railStyle:'line',cardStyle:'tint',radius:6,cardScale:.9,fieldLayout:'runin',diagW:100,diagStroke:1.75,diagFs:15,...PRESETS.paper};
 const SPEC=[
  {h:'Screen'},
  {k:'mode',l:'Mode',t:'select',o:['scroll','paged']},
@@ -373,6 +428,10 @@ const SPEC=[
  {k:'radius',l:'Corner radius',t:'range',min:0,max:20,step:1},
  {k:'cardScale',l:'Card text scale',t:'range',min:.75,max:1,step:.01},
  {k:'fieldLayout',l:'Field labels',t:'select',o:['runin','side']},
+ {h:'Diagrams'},
+ {k:'diagW',l:'Width %',t:'range',min:50,max:100,step:5},
+ {k:'diagStroke',l:'Stroke',t:'range',min:1,max:3,step:.25},
+ {k:'diagFs',l:'Label size',t:'range',min:11,max:20,step:.5},
 ];
 let S={...DEFAULTS};
 try{const emb=JSON.parse(document.getElementById('settings').textContent||'{}');Object.assign(S,emb);}catch(e){}
@@ -398,6 +457,7 @@ function apply(){
   const C=S.theme==='dark'?PRESETS.slate:S;
   for(const c of ['paper','ink','accent','accent2','muted','rule'])R.setProperty('--'+c,C[c]);
   R.setProperty('--radius',S.radius+'px');R.setProperty('--card-scale',S.cardScale);R.setProperty('--cols',S.cols);
+  R.setProperty('--diag-w',S.diagW+'%');R.setProperty('--diag-stroke',S.diagStroke+'px');R.setProperty('--diag-fs',S.diagFs+'px');
   document.body.className='mode-'+S.mode+' theme-'+S.theme+' rail-style-'+S.railStyle+' card-style-'+S.cardStyle+(scroll?'':' cols-'+S.cols)+' fields-'+S.fieldLayout;
   let st=document.getElementById('pagesize');if(!st){st=document.createElement('style');st.id='pagesize';document.head.appendChild(st);}
   st.textContent='@page{size:'+w+'px '+h+'px;margin:0}';
@@ -434,6 +494,7 @@ function extract(){
       if(/^where this connects$/i.test(t)){const c=el('div','connects');c.appendChild(el('span','k','Where this connects'));i++;while(nodes[i]){c.appendChild(nodes[i].cloneNode(true));i++;}blocks.push({type:'connects',el:c,section:t});continue;}
       const h=el('h2','section',n.innerHTML);blocks.push({type:'h2',el:h,keep:true,section:t});i++;continue;
     }
+    if(tag==='FIGURE'&&n.classList.contains('diagram-fig')){blocks.push({type:'diagram',el:n.cloneNode(true)});i++;continue;}
     if(tag==='P'){
       const html=n.innerHTML;const t=textOf(n);
       const dm=t.replace(/\s+/g,' ').match(/^\[DIAGRAM:\s*([\s\S]+)\]$/);
@@ -542,6 +603,7 @@ function paginate(){
     if(b.type==='h2'||b.type==='direct'||b.type==='connects')run.section=b.section||run.section;
     if(!pg)open();
     if(b.type==='p'&&b.el.classList.contains('intro')){placeSpan(b.el);continue;}
+    if(b.type==='diagram'){placeSpan(b.el);continue;}
     const isCard=S.cols==='2'&&(b.type==='entry'||b.type==='direct'||b.type==='prompt');
     if(isCard){
       if(!cards){sealFlow();cards=el('div','band span cards');body.appendChild(cards);}

@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 320" role="img">
+  <defs>
+    <marker id="ah2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="ah" d="M0 0 L10 5 L0 10 z"/></marker>
+  </defs>
+  <!-- what the schema permits -->
+  <rect class="box tint" x="40" y="40" width="470" height="250" rx="8"/>
+  <text class="lab" x="60" y="66">what the schema permits</text>
+  <text class="mu" x="60" y="88">every combination its columns can hold</text>
+  <!-- what the product allows -->
+  <rect class="box ac" x="120" y="120" width="300" height="140" rx="8"/>
+  <text class="lab" x="140" y="146">what the product allows</text>
+  <text class="mu" x="140" y="168">the rows that make sense</text>
+  <!-- the gap -->
+  <text class="ac" x="275" y="279" text-anchor="middle">the gap: invalid states the database will store</text>
+  <!-- guards -->
+  <text class="lab" x="560" y="66">what keeps rows out of the gap</text>
+  <line class="ln ac" x1="420" y1="140" x2="548" y2="110" marker-end="url(#ah2)"/>
+  <text x="560" y="114">a constraint</text>
+  <text class="mu" x="560" y="134">the database refuses the write</text>
+  <line class="ln mu" x1="420" y1="190" x2="548" y2="190" marker-end="url(#ah2)"/>
+  <text x="560" y="194">application code</text>
+  <text class="mu" x="560" y="214">only on the paths that remember</text>
+  <line class="ln mu dash" x1="420" y1="240" x2="548" y2="270" marker-end="url(#ah2)"/>
+  <text x="560" y="274">nothing</text>
+  <text class="mu" x="560" y="294">the row goes in and looks fine</text>
+</svg>

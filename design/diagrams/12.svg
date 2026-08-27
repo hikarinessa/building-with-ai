@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 340" role="img">
+  <text class="lab" x="40" y="30">which level each tier gets</text>
+  <!-- column headers -->
+  <text x="385" y="66" text-anchor="middle">level 1</text>
+  <text class="mu" x="385" y="84" text-anchor="middle">you run it</text>
+  <text x="495" y="66" text-anchor="middle">level 2</text>
+  <text class="mu" x="495" y="84" text-anchor="middle">assertions</text>
+  <text x="605" y="66" text-anchor="middle">level 3</text>
+  <text class="mu" x="605" y="84" text-anchor="middle">report, spot check</text>
+  <text x="715" y="66" text-anchor="middle">level 4</text>
+  <text class="mu" x="715" y="84" text-anchor="middle">nothing</text>
+  <!-- grid lines -->
+  <line class="ln mu" x1="40" y1="98" x2="770" y2="98"/>
+  <line class="ln mu" x1="40" y1="152" x2="770" y2="152"/>
+  <line class="ln mu" x1="40" y1="206" x2="770" y2="206"/>
+  <line class="ln mu" x1="40" y1="260" x2="770" y2="260"/>
+  <line class="ln mu" x1="40" y1="314" x2="770" y2="314"/>
+  <!-- rows -->
+  <text x="40" y="130">tier A</text>
+  <text class="mu" x="110" y="122">authorization, money,</text>
+  <text class="mu" x="110" y="140">deletion, migrations, secrets</text>
+  <text x="40" y="184">tier B</text>
+  <text class="mu" x="110" y="176">rules, state machines,</text>
+  <text class="mu" x="110" y="194">calculations</text>
+  <text x="40" y="238">tier C</text>
+  <text class="mu" x="110" y="230">interface, styling,</text>
+  <text class="mu" x="110" y="248">copy, tooling</text>
+  <text x="40" y="292">tier D</text>
+  <text class="mu" x="110" y="284">prototypes,</text>
+  <text class="mu" x="110" y="302">throwaway scripts</text>
+  <!-- filled cells -->
+  <rect class="fill-ac" x="337" y="108" width="96" height="34" rx="4"/>
+  <text class="onac" x="385" y="130" text-anchor="middle">at the change</text>
+  <rect class="fill-ac" x="447" y="108" width="96" height="34" rx="4"/>
+  <text class="onac" x="495" y="130" text-anchor="middle">kept running</text>
+  <rect class="fill-ac" x="447" y="162" width="96" height="34" rx="4"/>
+  <text class="onac" x="495" y="184" text-anchor="middle">●</text>
+  <rect class="fill-ac" x="557" y="216" width="96" height="34" rx="4"/>
+  <text class="onac" x="605" y="238" text-anchor="middle">●</text>
+  <rect class="fill-ac" x="667" y="270" width="96" height="34" rx="4"/>
+  <text class="onac" x="715" y="292" text-anchor="middle">●</text>
+  <!-- relax note -->
+  <text class="mu" x="40" y="336">tiers B–D relax as your measured reliability improves; tier A doesn't, since its failures are silent</text>
+</svg>

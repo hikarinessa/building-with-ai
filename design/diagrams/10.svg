@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 340" role="img">
+  <defs>
+    <marker id="ah10" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="ah" d="M0 0 L10 5 L0 10 z"/></marker>
+  </defs>
+  <text class="lab" x="40" y="30">history, and the four recovery moves</text>
+  <!-- branch -->
+  <line class="ln mu" x1="310" y1="170" x2="380" y2="80"/>
+  <line class="ln mu" x1="380" y1="80" x2="470" y2="80"/>
+  <circle class="box" cx="380" cy="80" r="12"/>
+  <circle class="box" cx="470" cy="80" r="12"/>
+  <text class="mu" x="300" y="70" text-anchor="middle">a branch</text>
+  <line class="ln ac" x1="492" y1="66" x2="512" y2="94"/>
+  <line class="ln ac" x1="512" y1="66" x2="492" y2="94"/>
+  <text class="ac" x="580" y="76">4 · abandon</text>
+  <text class="mu" x="580" y="94">main never knew</text>
+  <!-- main chain -->
+  <line class="ln mu" x1="80" y1="170" x2="540" y2="170"/>
+  <circle class="box" cx="80" cy="170" r="14"/>
+  <circle class="box" cx="195" cy="170" r="14"/>
+  <circle class="box" cx="310" cy="170" r="14"/>
+  <circle class="box" cx="425" cy="170" r="14"/>
+  <circle class="box ac" cx="540" cy="170" r="14"/>
+  <text class="mu" x="80" y="206" text-anchor="middle">C1</text>
+  <text class="mu" x="195" y="206" text-anchor="middle">C2</text>
+  <text class="mu" x="310" y="206" text-anchor="middle">C3</text>
+  <text class="mu" x="425" y="206" text-anchor="middle">C4</text>
+  <text class="ac" x="540" y="144" text-anchor="middle">main</text>
+  <!-- 3 revert: a new commit -->
+  <line class="ln ac dash" x1="554" y1="170" x2="590" y2="170" marker-end="url(#ah10)"/>
+  <circle class="box ac dash" cx="606" cy="170" r="14"/>
+  <text class="ac" x="606" y="206" text-anchor="middle">3 · revert</text>
+  <text class="mu" x="640" y="226" text-anchor="end">a new commit that undoes C4 — history keeps both</text>
+  <!-- working files -->
+  <rect class="box dash" x="660" y="250" width="120" height="60" rx="6"/>
+  <text x="720" y="276" text-anchor="middle">working files</text>
+  <text class="mu" x="720" y="296" text-anchor="middle">uncommitted</text>
+  <!-- 1 discard -->
+  <path class="ln ac" d="M660 262 C620 262, 580 230, 550 188" fill="none" marker-end="url(#ah10)"/>
+  <text class="ac" x="720" y="218" text-anchor="middle">1 · discard</text>
+  <text class="mu" x="720" y="236" text-anchor="middle">back to the last commit</text>
+  <!-- 2 restore one file -->
+  <path class="ln" d="M195 184 C195 300, 520 300, 658 292" fill="none" marker-end="url(#ah10)"/>
+  <text x="400" y="322" text-anchor="middle">2 · restore one file from C2</text>
+</svg>

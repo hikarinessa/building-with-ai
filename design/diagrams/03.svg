@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 300" role="img">
+  <defs>
+    <marker id="ah3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="ah" d="M0 0 L10 5 L0 10 z"/></marker>
+  </defs>
+  <text class="lab" x="40" y="30">one value on its way to the screen</text>
+  <!-- five copies -->
+  <rect class="box ac" x="40" y="120" width="130" height="60" rx="6"/>
+  <text x="105" y="156" text-anchor="middle">database row</text>
+  <rect class="box" x="190" y="120" width="130" height="60" rx="6"/>
+  <text class="sm" x="255" y="156" text-anchor="middle">server response</text>
+  <rect class="box" x="340" y="120" width="130" height="60" rx="6"/>
+  <text x="405" y="156" text-anchor="middle">fetch cache</text>
+  <rect class="box" x="490" y="120" width="130" height="60" rx="6"/>
+  <text class="sm" x="555" y="156" text-anchor="middle">component state</text>
+  <rect class="box" x="640" y="120" width="130" height="60" rx="6"/>
+  <text x="705" y="156" text-anchor="middle">form value</text>
+  <!-- read arrows -->
+  <line class="ln mu" x1="170" y1="150" x2="188" y2="150" marker-end="url(#ah3)"/>
+  <line class="ln mu" x1="320" y1="150" x2="338" y2="150" marker-end="url(#ah3)"/>
+  <line class="ln mu" x1="470" y1="150" x2="488" y2="150" marker-end="url(#ah3)"/>
+  <line class="ln mu" x1="620" y1="150" x2="638" y2="150" marker-end="url(#ah3)"/>
+  <!-- ages -->
+  <text class="ac" x="105" y="206" text-anchor="middle">the truth, changing</text>
+  <text class="mu" x="255" y="206" text-anchor="middle">true at response time</text>
+  <text class="mu" x="405" y="206" text-anchor="middle">aging since fetched</text>
+  <text class="mu" x="555" y="206" text-anchor="middle">aging since copied</text>
+  <text class="mu" x="705" y="206" text-anchor="middle">aging since opened</text>
+  <!-- the edit path back -->
+  <path class="ln ac" d="M705 118 C705 62, 105 62, 105 118" fill="none" marker-end="url(#ah3)"/>
+  <text class="ac" x="405" y="54" text-anchor="middle">an edit goes straight back to the row</text>
+  <line class="ln mu dash" x1="405" y1="214" x2="405" y2="246"/>
+  <line class="ln mu dash" x1="555" y1="214" x2="555" y2="246"/>
+  <text class="mu" x="480" y="268" text-anchor="middle">the cache and the component still hold the old value until something refreshes them</text>
+</svg>

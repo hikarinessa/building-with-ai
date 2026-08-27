@@ -23,5 +23,8 @@
  "cardStyle": "tint",
  "radius": 6,
  "cardScale": 0.9,
- "fieldLayout": "runin"
+ "fieldLayout": "runin",
+ "diagW": 100,
+ "diagStroke": 1.75,
+ "diagFs": 15
 }
