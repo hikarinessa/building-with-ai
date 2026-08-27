@@ -5,12 +5,12 @@
 <title>08 · Injection</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Manrope:wght@400;500;600;700&family=Inter:wght@400;500;600&family=Instrument+Sans:wght@400;500;600&family=DM+Sans:wght@400;500;600&family=Space+Grotesk:wght@400;500;600&family=Charis+SIL:ital,wght@0,400;0,700;1,400;1,700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&family=Spectral:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Manrope:wght@400;500;600;700&family=Inter:wght@400;500;600&family=Instrument+Sans:wght@400;500;600&family=DM+Sans:wght@400;500;600&family=Space+Grotesk:wght@400;500;600&family=Petrona:ital,wght@0,300..700;1,300..700&family=Charis+SIL:ital,wght@0,400;0,700;1,400;1,700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&family=Spectral:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
   --page-w:1920px; --page-h:1080px; --pad:96px; --rail-w:300px; --measure:880px; --gap:56px;
   --fs:24px; --lh:1.5; --head-weight:500; --head-track:-0.01em;
-  --font-body:"Charis SIL","Charter","Source Serif 4",Georgia,serif;
+  --font-body:"Petrona","Charis SIL",Georgia,serif;
   --font-head:"Poppins","Manrope",system-ui,sans-serif;
   --font-mono:"Menlo","JetBrains Mono",monospace;
   --paper:#FBFAF7; --ink:#1E2226; --accent:#2E6F73; --accent2:#A0522D; --muted:#6B7075; --rule:#D9D6CF;
@@ -233,10 +233,11 @@ body.mode-scroll #deck{display:none}
  "railStyle": "line",
  "measure": 880,
  "gap": 56,
- "fontBody": "Charis SIL",
+ "fontBody": "Petrona",
  "fontHead": "Poppins",
  "fontMono": "Menlo",
- "fs": 24,
+ "fsScreen": 20,
+ "fs": 25,
  "lh": 1.5,
  "headWeight": 500,
  "headTrack": -0.01,
@@ -387,8 +388,8 @@ body.mode-scroll #deck{display:none}
 (function(){
 const RATIOS={'16:9':[1920,1080],'16:10':[1920,1200],'3:2':[1800,1200],'4:3':[1600,1200]};
 const FONTS={
-  body:{'Charis SIL':'"Charis SIL","Charter","Source Serif 4",Georgia,serif','Charter':'"Charter","Charis SIL","Source Serif 4",Georgia,serif','Source Serif 4':'"Source Serif 4","Charis SIL",Georgia,serif','Newsreader':'"Newsreader","Charis SIL",Georgia,serif','Spectral':'"Spectral","Charis SIL",Georgia,serif','Literata':'"Literata","Charis SIL",Georgia,serif','Inter':'"Inter",system-ui,sans-serif','Manrope':'"Manrope",system-ui,sans-serif'},
-  head:{'Poppins':'"Poppins","Manrope",system-ui,sans-serif','Manrope':'"Manrope",system-ui,sans-serif','Inter':'"Inter",system-ui,sans-serif','Instrument Sans':'"Instrument Sans",system-ui,sans-serif','DM Sans':'"DM Sans",system-ui,sans-serif','Space Grotesk':'"Space Grotesk",system-ui,sans-serif','Source Serif 4':'"Source Serif 4",Georgia,serif','Charter':'"Charter",Georgia,serif'},
+  body:{'Petrona':'"Petrona","Charis SIL",Georgia,serif','Charis SIL':'"Charis SIL","Source Serif 4",Georgia,serif','Source Serif 4':'"Source Serif 4","Charis SIL",Georgia,serif','Newsreader':'"Newsreader","Charis SIL",Georgia,serif','Spectral':'"Spectral","Charis SIL",Georgia,serif','Literata':'"Literata","Charis SIL",Georgia,serif','Inter':'"Inter",system-ui,sans-serif','Manrope':'"Manrope",system-ui,sans-serif'},
+  head:{'Poppins':'"Poppins","Manrope",system-ui,sans-serif','Manrope':'"Manrope",system-ui,sans-serif','Inter':'"Inter",system-ui,sans-serif','Instrument Sans':'"Instrument Sans",system-ui,sans-serif','DM Sans':'"DM Sans",system-ui,sans-serif','Space Grotesk':'"Space Grotesk",system-ui,sans-serif','Source Serif 4':'"Source Serif 4",Georgia,serif'},
   mono:{'Menlo':'"Menlo","JetBrains Mono",monospace','JetBrains Mono':'"JetBrains Mono","Menlo",monospace'}
 };
 const PRESETS={
@@ -396,7 +397,7 @@ const PRESETS={
   sample:{paper:'#FFFFFF',ink:'#111417',accent:'#1F6F78',accent2:'#A3432B',muted:'#5E6367',rule:'#DDDDDD'},
   slate:{paper:'#14181C',ink:'#E8E6E1',accent:'#6FC3C9',accent2:'#E0A070',muted:'#9AA0A6',rule:'#2C3238'}
 };
-const DEFAULTS={mode:'scroll',theme:'light',fsScreen:19,measureScreen:720,srailW:280,ratio:'16:9',cols:'2',partBreak:'auto',pad:96,railW:300,measure:880,gap:56,fs:24,lh:1.5,fontBody:'Charis SIL',fontHead:'Poppins',fontMono:'Menlo',headWeight:500,headTrack:-0.01,railStyle:'line',cardStyle:'tint',radius:6,cardScale:.9,fieldLayout:'runin',diagW:100,diagStroke:1.75,diagFs:15,...PRESETS.paper};
+const DEFAULTS={mode:'scroll',theme:'light',fsScreen:19,measureScreen:720,srailW:280,ratio:'16:9',cols:'2',partBreak:'auto',pad:96,railW:300,measure:880,gap:56,fs:24,lh:1.5,fontBody:'Petrona',fontHead:'Poppins',fontMono:'Menlo',headWeight:500,headTrack:-0.01,railStyle:'line',cardStyle:'tint',radius:6,cardScale:.9,fieldLayout:'runin',diagW:100,diagStroke:1.75,diagFs:15,...PRESETS.paper};
 const SPEC=[
  {h:'Screen'},
  {k:'mode',l:'Mode',t:'select',o:['scroll','paged']},
@@ -450,7 +451,7 @@ function apply(){
   R.setProperty('--pad',S.pad+'px');R.setProperty('--rail-w',S.railStyle==='none'?'0px':S.railW+'px');R.setProperty('--srail-w',S.srailW+'px');
   R.setProperty('--measure',(scroll?S.measureScreen:S.measure)+'px');R.setProperty('--gap',S.gap+'px');
   R.setProperty('--fs',(scroll?S.fsScreen:S.fs)+'px');R.setProperty('--lh',S.lh);
-  R.setProperty('--font-body',FONTS.body[S.fontBody]||FONTS.body['Charis SIL']);
+  R.setProperty('--font-body',FONTS.body[S.fontBody]||FONTS.body['Petrona']);
   R.setProperty('--font-head',FONTS.head[S.fontHead]||FONTS.head.Poppins);
   R.setProperty('--font-mono',FONTS.mono[S.fontMono]||FONTS.mono.Menlo);
   R.setProperty('--head-weight',S.headWeight);R.setProperty('--head-track',S.headTrack+'em');
