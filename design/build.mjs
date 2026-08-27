@@ -97,7 +97,8 @@ const cards = all.map(c => {
   const pdf = existsSync(resolve(outDir, c.out + '.pdf')) ? `<a class="pdf" href="${c.out}.pdf">PDF</a>` : '';
   const direct = c.direct ? `<span class="d"><span class="dk">Direct test</span>${esc(c.direct)}</span>` : '';
   return `<div class="card"><a class="main" href="${c.out}.html"><span class="num">${c.num}</span><span class="t">${esc(c.title)}</span><span class="s">${esc(c.sub)}</span><span class="l">${esc(c.lede)}</span>${direct}</a><div class="links"><a href="${c.out}.html">Read</a>${pdf}</div></div>`;
-}).join('\n');
+});
+const [toolkitCard, ...chapterCards] = cards;
 const index = `<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Building with AI</title>
@@ -113,8 +114,11 @@ body{margin:0;background:var(--paper);color:var(--ink);font:20px/1.5 "${bodyFont
 main{max-width:1180px;margin:0 auto;padding:4rem 2.5rem 6rem}
 .series{font-family:Poppins,system-ui,sans-serif;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-weight:500}
 h1{font-family:Poppins,system-ui,sans-serif;font-weight:500;font-size:3rem;letter-spacing:-.01em;margin:.4rem 0 .6rem;line-height:1.1}
-.intro{max-width:44rem;color:var(--muted);margin:0 0 3rem;font-size:1.05rem}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:1.4rem}
+.intro{color:var(--muted);margin:0 0 1.4rem;font-size:1.05rem}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4rem}
+.head{grid-column:span 2;padding-right:1rem;display:flex;flex-direction:column;justify-content:flex-end}
+@media(max-width:1000px){.grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:680px){.grid{grid-template-columns:1fr}.head{grid-column:span 1}}
 .card{display:flex;flex-direction:column;background:var(--tint);border-radius:8px;padding:1.4rem 1.5rem 1.1rem;transition:transform .12s}
 .card:hover{transform:translateY(-2px)}
 .card .main{display:block;text-decoration:none;color:inherit;flex:1}
@@ -124,7 +128,7 @@ h1{font-family:Poppins,system-ui,sans-serif;font-weight:500;font-size:3rem;lette
 .card .l{display:block;font-size:.9rem;line-height:1.45;color:var(--ink);display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
 .card .d{display:block;margin-top:.9rem;padding-top:.7rem;border-top:1px dashed var(--rule);font-size:.86rem;line-height:1.45;color:var(--ink)}
 .card .dk{display:block;font-family:Poppins,system-ui,sans-serif;font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);font-weight:500;margin-bottom:.25rem}
-.order{max-width:44rem;color:var(--muted);margin:-2rem 0 3rem;font-size:.95rem}
+.order{color:var(--muted);margin:0 0 1rem;font-size:.95rem}
 .order b{color:var(--ink);font-weight:500}
 .links{margin-top:1rem;padding-top:.7rem;border-top:1px solid var(--rule);font-family:Poppins,system-ui,sans-serif;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;display:flex;gap:1.2rem}
 .links a{color:var(--muted);text-decoration:none}.links a:hover{color:var(--accent)}
@@ -139,12 +143,15 @@ addEventListener('DOMContentLoaded',()=>{const b=document.getElementById('themet
 </head><body>
 <button id="themetoggle" class="themetoggle" type="button" onclick="__toggleTheme()">Dark mode</button>
 <main>
+<div class="grid">
+<div class="head">
 <div class="series">Building with AI</div>
 <h1>Building with AI</h1>
 <p class="intro">This is a self-guided course on the mental models behind software you build with an AI assistant — Claude Code, Cursor, and the like; "your assistant" from here on. Twelve chapters each teach one of them, describe what usually goes wrong when the assistant writes that part, and give you prompts for investigating a project of your own — there's nothing to build, and you can read it all before you have one. Each card below carries the chapter's direct test, the one check that settles most of that area at once, so this page works as the map.</p>
 <p class="order"><b>Reading order.</b> Chapter 0 is ten minutes on how the course is used and the prompts the others assume; read it, then chapter 1. If you're already shipping and something has worried you, read chapter 6 next. Leave chapter 12 until you've run one of the prompts — it decides how much checking a change deserves, and that lands better with a result in hand.</p>
-<div class="grid">
-${cards}
+</div>
+${toolkitCard}
+${chapterCards.join('\n')}
 </div>
 </main></body></html>
 `;
