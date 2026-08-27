@@ -25,6 +25,8 @@ A **test** is a small program that performs one action against the code and chec
 
 The property that matters most is one you can judge without reading the test: could it fail? A real test asserts a specific claim, and a change that broke the claim would make it fail. A test that passes on an empty result, that checks the code ran without checking what it did, or that asserts a value the test itself set up, can't fail on the claim it's named after — the proxy green from the entries below, written down as a test. The going-deeper section has the ask for this, with "what change would make it fail" as the completeness criterion.
 
+If your project has no tests at all — common, and nothing to apologise for — the on-ramp is one: ask for a single assertion covering the most sensitive claim you have, usually "a user without access gets zero rows," and run it. D5 begins there.
+
 ## Reports from the author
 
 An account of work written by the party that did the work is shaped by the assumptions that produced the work. This is older than any particular tool — it's why code review is assigned to someone other than the author, why audits are external, and why your own last-month decisions look sounder in memory than in the file. An assistant is no exception: the session that wrote the code holds the context that made every choice seem right, and asked "is this okay?" it tends to say yes.
@@ -50,7 +52,7 @@ The level is decided by what the change touches, in advance — not by how the c
 
 | Tier | Applies to | Level |
 |---|---|---|
-| **A** | Authorization, money, deletion, migrations, secrets, anything crossing the trust boundary | 1 at the change, then 2 kept — evidence you run, and an assertion that keeps running |
+| **A** | Authorization, money, deletion, migrations (schema changes, chapter 2), secrets, anything crossing the trust boundary | 1 at the change, then 2 kept — evidence you run, and an assertion that keeps running |
 | **B** | Business rules, state machines, calculations, anything with a correct answer | 2 — assertions you execute |
 | **C** | Interface states, styling, copy, internal tooling | 3 — report plus spot check |
 | **D** | Prototypes, throwaway scripts, local experiments | 4 — nothing |
@@ -67,16 +69,7 @@ Three refinements carry most of the practical weight:
 
 ## Asking for enumerations
 
-The asks throughout this series share one design: they demand a list with a property you can judge without reading its contents. A vague question has no failing answer — "are there any authorization gaps?" returns "this looks good" reliably, because nothing in the question forces a finding to surface. The patterns that work:
-
-1. **List with a completeness criterion** — "every table, all four operations; flag any with fewer than four." You can count rows and flags without understanding SQL.
-2. **State the source** — "for each write, session or request body?" A forced choice between a right answer and a wrong one.
-3. **Say none if absent** — the instruction that turns a silent omission into a visible word.
-4. **Walk the failure path** — "step by step, what stops this bad request, and does anything actually?" The walk must reach a definite ending.
-5. **List what this depends on** — surfaces the neighbour that the change silently leans on.
-6. **Plant a control** — before trusting an enumeration, seed one finding you know about and see whether the list surfaces it. A list that misses the planted item wasn't complete, and a list that has never had this done to it has never been shown able to find anything.
-
-And the anti-patterns: yes/no questions, "any problems?", and anything the assistant can satisfy with a summary. Where you ask matters as much as how — a fresh session with the code pasted in, per the section above. The asks also assume an assistant that can read your project: a tool that works inside your files rather than a chat window you paste into. From a chat window, every audit starts with pasting the relevant files, and the list it returns covers only what you pasted.
+The asks throughout this series share one design: they demand a list with a property you can judge without reading its contents, and chapter 0 gives the six patterns they're built from. The one to apply before trusting any list this series produces is the last of them, *plant a control*: seed a finding you already know about and see whether it surfaces. Two things about where you ask: a fresh session with the code read cold, per the section above, and an assistant that can read the project, since from a chat window every audit covers only what you pasted.
 
 ---
 
@@ -86,7 +79,7 @@ This chapter's failures live in the verifying rather than the code, and each ent
 
 > **The vague question** — a review request with no failing answer.
 > *Tell:* your question could be answered with "looks good" and often is.
-> *Instead:* one of the enumeration patterns above, with the completeness criterion stated.
+> *Instead:* one of chapter 0's enumeration patterns, with the completeness criterion stated.
 
 > **Asking the author** — the session that wrote the code is the session reviewing it.
 > *Tell:* "are you sure?" asked downward in the same thread, answered with a defence.
@@ -112,7 +105,7 @@ These prompts are for your assistant, and each comes with a note on what a good 
 
 **D1 · Tier the history** *(audit)*
 
-> Look at the last twenty changes in my project's history. For each: one line on what it touched, its tier — A for authorization/money/deletion/migrations/secrets/trust boundary, B for logic with a correct answer, C for interface and tooling, D for throwaway — and, as far as you can tell, what verification it actually got. Present it as a table and flag every A-row whose verification you can't point to.
+> Find my project's history — say where it lives, or that there is none — then look at the last twenty changes. For each: one line on what it touched, its tier — A for authorization/money/deletion/migrations/secrets/trust boundary, B for logic with a correct answer, C for interface and tooling, D for throwaway — and, as far as you can tell, what verification it actually got. Present it as a table and flag every A-row whose verification you can't point to.
 
 *A good response is a table you can read in one pass, and the flagged rows are your worklist. If tiers come back without reasons, ask for the reason column — "touches a migration" is checkable, a bare "A" isn't.*
 
@@ -136,7 +129,7 @@ These prompts are for your assistant, and each comes with a note on what a good 
 
 **D5 · Audit my tests** *(audit)*
 
-> List every test in my project. For each: one line on the claim it checks, and one specific change to the code that would make it fail. Flag every test where you can't name such a change, and every test that passes on an empty result. Then list the tier A and tier B behaviour in my project that no test covers. Full table, no summarizing.
+> If my project has no tests, say so, then write one: an assertion that a signed-in user requesting another user's row gets nothing, and show me how to run it. Otherwise: list every test in my project. For each: one line on the claim it checks, and one specific change to the code that would make it fail. Flag every test where you can't name such a change, and every test that passes on an empty result. Then list the tier A and tier B behaviour in my project that no test covers. Full table, no summarizing.
 
 *A good response names a breaking change per test, and the flags are tests that measure something adjacent to their name. The last list is the worklist: any tier A row on it is a claim held at level 1 on the day it was checked and at level 4 every day since.*
 

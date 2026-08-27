@@ -1,6 +1,6 @@
 # Chapter pages
 
-One HTML template renders every chapter two ways from the same file: a scrollable page for the screen, and 16:9 pages for print. `docs/index.html` is the map: every chapter with its subtitle and its direct test, plus the reading-order note. The direct test is pulled from each chapter's `## The direct test` section by the build.
+One HTML template renders every chapter two ways from the same file: a scrollable page for the screen, and 16:9 pages for print. `docs/index.html` is the map (and `docs/authorization-lab-manual.pdf` is copied in from `reference/` for chapter 6's footer link): every chapter with its subtitle and its direct test, plus the reading-order note. The direct test is pulled from each chapter's `## The direct test` section by the build.
 
 ## Read
 

@@ -1,13 +1,13 @@
 # Building with AI — Curriculum
 ## High-level mental models, with prompts to go deeper
 
-Twelve standalone chapters, each delivered as a scrollable page and a short PDF. A chapter teaches one mental model at high altitude, describes what usually goes wrong when the assistant writes that part, and closes with prompts the reader can hand to their assistant to go deeper. The reader ends up able to place any problem on a map, and with a method for deepening any region of it on demand.
+Thirteen chapters — a ten-minute toolkit chapter 0 and twelve standalone chapters — each delivered as a scrollable page and a short PDF. A chapter teaches one mental model at high altitude, describes what usually goes wrong when the assistant writes that part, and closes with prompts the reader can hand to their assistant to go deeper. The reader ends up able to place any problem on a map, and with a method for deepening any region of it on demand.
 
 **Who it's for:** people building software with AI assistance who don't read code. No requirement to read code fluently, ever — where a check needs evidence, the chapter says what to run and what the result means. Some willingness to run a request and read the answer.
 
-**What it assumes about the reader's tools.** The prompts assume an assistant that can read the reader's project — a tool that works inside their files (Claude Code, Cursor, and their equivalents) rather than a chat window they paste into. A chat window works for every prompt with the relevant files pasted first, and the lists it returns cover only what was pasted; chapter 12 says this to the reader. The examples lean on one common stack — a hosted database with row-level policies (Supabase), a bundled frontend with a public-variable prefix, a payment provider with public and secret keys — because that's where the audience mostly builds. Every model is stated so that it holds on other stacks, and chapter 6 carries the branch for a database without policies.
+**What it assumes about the reader's tools.** Nothing is built in the course: the reader learns models and gets prompts for investigating a project, and runs them when they have one. The prompts assume an assistant that can read the project — a tool that works inside the files (Claude Code, Cursor, and their equivalents) rather than a chat window; a chat window works with the relevant files pasted first, and its lists cover only what was pasted. Chapter 0 says this to the reader and carries the three capabilities most checks need (a disposable database copy, re-sending a request from devtools, a local client build) as prompts the reader hands to the assistant, so no check assumes a skill the course hasn't provided a prompt for. The examples lean on one common stack — a hosted database with row-level policies (Supabase), a bundled frontend with a public-variable prefix, a payment provider with public and secret keys — because that's where the audience mostly builds. Every model is stated so that it holds on other stacks, and chapter 6 carries the branch for a database without policies.
 
-**Companion files:** `tone-of-voice.md` (governs all prose), `chapters/chapter-NN-slug.md` (the twelve chapters), `reference/authorization-lab-manual.pdf` (a five-sitting lab manual on authorization — the depth track chapter 6 points to, and the typographic starting point for the pages), and `design/` (the rendering pipeline: `README.md` explains the control surface and the build). `CLAUDE.md` orients new sessions.
+**Companion files:** `tone-of-voice.md` (governs all prose), `chapters/chapter-NN-slug.md` (chapters 00–12), `reference/authorization-lab-manual.pdf` (a five-sitting lab manual on authorization — the depth track chapter 6 points to, and the typographic starting point for the pages), and `design/` (the rendering pipeline: `README.md` explains the control surface and the build). `CLAUDE.md` orients new sessions.
 
 ---
 
@@ -46,6 +46,7 @@ Related chapters. Where the full-depth version lives, when one exists.
 - Write for durability. Each chapter's model rests on a principle that doesn't depend on how capable current models are — trust boundaries, verification economics, independence of review. Current-model behaviour appears as a measured instance ("measure it on your own tool, re-measure when it changes"), never as the foundation, so the chapter survives the tools improving.
 - Every *ask* and every going-deeper prompt is tested before shipping, and the test has a control: the prompt runs against a project with a planted finding, and passes only if the finding appears in the list. A prompt that returns reassurance instead of a checkable artifact, or a list that misses the plant, gets rewritten. A test against a role-played assistant is a smoke test and is recorded as one; the shipping bar is a real tool on a real repository.
 - Chapters are standalone. A chapter that leans on another's model names it with a chapter reference in one line rather than re-teaching it.
+- A check that needs a capability the reader may not have — a test copy, devtools, a local build, a named commit — points at the chapter 0 prompt that provides it, or hands the setup to the assistant in the check itself ("ask it for a way to run requests as a specific test user"). A check that silently assumes the skill fails the audience.
 - Diagrams are marked `[DIAGRAM: …]` in draft — every chapter carries at least one — and produced at the design pass, in the typographic style of `reference/authorization-lab-manual.pdf`.
 
 ### The prompt shapes
@@ -64,6 +65,16 @@ Every audit is only as trustworthy as its ability to find something, so chapter 
 # The chapters
 
 Each chapter spec below carries its scope (the concepts the model beat covers), the failure entries that live in it (name plus gist — the four fields are written in the chapter), and any structural content the chapter is built around. This document is the complete source for authoring; no other curriculum draft is needed.
+
+### 0. The toolkit
+
+How the course is used, and the prompts every other chapter assumes you have.
+
+**Scope.** Asks against checks. What an assistant needs to investigate (a tool that reads the files; the what's-my-stack prompt). Reading a list for its shape — the six enumeration patterns the whole series' asks are built from: completeness criterion, state the source, say none if absent, walk the failure path, list dependencies, plant a control — and the anti-patterns. The three capabilities checks assume, each handed to the assistant as a prompt: a copy of the database you can break, re-sending a request from the browser, building the client the way production does. What a finding is (a conversation, not a verdict).
+
+**Entries.** None. Going deeper holds the four toolkit prompts: D1 a copy I can break, D2 re-send a request, D3 build the client, D4 find the rules file (named per tool).
+
+**Direct test.** None; the chapter is ten minutes and precedes the first.
 
 ## Part A — The machine
 
@@ -97,8 +108,8 @@ Schema decisions, and why they're the expensive ones to change.
 - *Timezone stored inconsistently* — some timestamps local, some UTC, indistinguishable in the rows.
 - *Missing index on a filtered column* — the list view that slows as the table grows.
 - *Unbounded query* — no pagination, so the response grows with the table until something breaks.
+- *Personal data with no reason and no exit* — columns about a person kept with no stated purpose and no path that removes them when the account goes. Sits fifth, before the scale entries, since it's about the shape and a reader at a few hundred rows skims the scale entries.
 - *Orphaned files* — a row deleted while the file it pointed at lives on in storage.
-- *Personal data with no reason and no exit* — columns about a person kept with no stated purpose and no path that removes them when the account goes.
 
 **Direct test.** Ask for the column combinations the schema permits but the product forbids, then insert one and see whether anything stops it.
 
@@ -190,11 +201,12 @@ Where user text becomes code, and why the receiver can't tell the difference.
 
 Calling services you don't control, and handling their failures.
 
-**Scope.** What calling an external service means: their uptime, their limits, their changes, your user's experience. Timeouts, retries, and backoff. Partial failure — the call that half-worked — and what the user sees when the other side doesn't answer. Rate limits, theirs on you, with a pointer to chapter 4 for yours on callers. Idempotency applied: retrying a call that creates something, and why running it twice must produce one result. API credentials at recognition depth (keys, tokens, OAuth as "logging in on your behalf"). Their code in your process — a library as a service that runs as you, with its own calendar and its own maintainer. What you send them — personal data leaving to services under their retention and rules. The real cost of adding a dependency.
+**Scope.** What calling an external service means: their uptime, their limits, their changes, your user's experience. Timeouts, retries, and backoff. Partial failure — the call that half-worked — and what the user sees when the other side doesn't answer. Rate limits, theirs on you, with a pointer to chapter 4 for yours on callers. What they charge: per-call cost, the cap the provider lets you set, the alert before it — the surprise bill as this chapter's failure arriving as money. Idempotency applied: retrying a call that creates something, and why running it twice must produce one result. API credentials at recognition depth (keys, tokens, OAuth as "logging in on your behalf"). Their code in your process — a library as a service that runs as you, with its own calendar and its own maintainer. What you send them — personal data leaving to services under their retention and rules. The real cost of adding a dependency.
 
 **Entries.**
 - *No handling of partial failure* — an external call with no timeout, no retry, and no failure branch, so the other side's bad day becomes your blank screen.
 - *Retry without idempotency* — a retry wrapping a call that creates something, so one purchase becomes two.
+- *The uncapped service* — a paid call with no ceiling on what it can cost.
 - *The unexamined dependency* — a library added for one function, with nobody having asked what else it does or who maintains it.
 - *User data leaving without a decision* — personal data sent to a service that didn't need it.
 
@@ -257,13 +269,13 @@ Risk tiering — the level is decided by what the change touches, in advance:
 
 Then the harder parts: changes that span tiers take the highest tier they touch; tiers B–D relax as measured reliability improves while tier A doesn't, since its failures are silent and severe; and compounding — small unreviewed choices are individually fine and jointly produce a codebase you no longer know the contents of, which is what scheduled audits are for, since those failures never produce a symptom on their own.
 
-Asking for enumerations, the method the whole series' *ask* fields use: list-with-completeness-criterion, state-the-source, say-none-if-absent, walk-the-failure-path, list-what-this-depends-on, plant-a-control — and the anti-patterns, yes/no questions and anything the model can satisfy with a summary. The note that the asks assume an assistant that can read the project.
+The enumeration patterns live in chapter 0; this chapter references them in one line, names *plant a control* as the one to apply before trusting any list, and keeps the note on where to ask (a fresh session; an assistant that reads the project). The no-tests-yet on-ramp: one assertion for the most sensitive claim, which D5 opens with.
 
 **Entries.** The verifying habits rather than the code: *the vague question; asking the author; the proxy green* (including a test no change could make fail); *tier A on autopilot*. Its going-deeper section turns the method on the reader: tier your last twenty changes and note which were tier A and got tier C treatment; audit your tests for the change that would make each fail.
 
 ---
 
-**Reading order.** Chapters stand alone, and two placements matter: chapter 1 first, since chapters 6, 7 and 8 assume the trust boundary, and chapter 12 early for anyone already shipping, since its method is what the going-deeper sections of every other chapter exercise. The index page and chapter 1's footer both say so.
+**Reading order.** Chapter 0 first (ten minutes), then chapter 1, since chapters 6, 7 and 8 assume the trust boundary. A reader who is already shipping and arrives worried reads chapter 6 next — it's where a real incident gets a real answer — and chapter 12 after a first win rather than second: read cold it's forward references and a method with nothing yet to apply it to (the student-persona review in `reviews/` found this the likeliest abandonment point). The index page says so.
 
 ---
 
@@ -282,5 +294,5 @@ The login mechanism itself — password storage, token signing, session librarie
 1. **Pilot** — the authorization chapter, reshaped from the lab manual. Done: `chapters/chapter-06-authorization.md`.
 2. **Author the chapters.** Done: all twelve drafted in `chapters/`. Chapter 8 (injection) was added after a critical review found injection — SQL, script, and prompt — absent from the set; the same review added authentication's front doors and the public bucket to chapter 6, transactions and the unmetered endpoint to chapter 4, observability to chapter 5, dependencies and personal data leaving to chapter 9, personal data held to chapter 2, a third entry to chapter 1, and the assertion section, the durability column, the control pattern and the test audit to chapter 12. Chapters 1 and 12 were revised once for register — performing headlines and rhythm tails replaced with descriptive ones, and chapter 12 regrounded in the independence-of-review principle rather than current-model behaviour; both corrections are rules now (tone-of-voice.md's headings section, the durability authoring rule above).
 3. **Test the prompts.** Current state, stated at the level chapter 12 would assign it: the pilot's D1–D3, chapter 1's validation audit, and chapter 12's convert-the-claims have passed a single-run smoke test against a role-played assistant over a planted-failure fixture — a model playing the reader's assistant, judged by the author, which is level 3. D3's wording was tightened as a result (the walk must name platform-generated APIs, not just hand-written routes; folded into prompt shape 3 above). Nothing has yet been run against a real tool on a real repository with a planted finding, which is the shipping bar in the authoring rules; every prompt in chapters 2–5 and 7–11, and every D4 and D5, is untested. Until that pass is done, "tested prompts" is a goal of the format and not a property of the current draft.
-4. **Reader test** — one or two people from the target audience read the pilot and try one prompt on their own project. The question is whether the going-deeper section gets used, since that's the part this format bets on.
-5. **Design pass.** In progress in `design/`. Each chapter is a scrollable HTML page (sticky section rail, light/dark, prev/next, a Copy button on every prompt) with an index page that doubles as the map — every chapter with its subtitle and its direct test, plus the reading-order note. The same template prints to 16:9 pages, so a PDF per chapter comes from the same source. Knobs — fonts, sizes, measure, colours, card density, print ratio and columns — are tuned live in the browser and baked into `design/settings.json` for the build. Typography keeps the manual's Poppins headings; the body face is Petrona, chosen on the pages after a side-by-side comparison of candidates. Every chapter now carries at least one `[DIAGRAM]` marker; the diagrams get drawn once the layout settles. The built pages live in `docs/`, served by GitHub Pages from `main`; a rebuild and a push is a deploy.
+4. **Reader test** — one or two people from the target audience read the pilot and try one prompt on their own project. The question is whether the going-deeper section gets used, since that's the part this format bets on. A first pass exists as a persona review (`reviews/student-review-dani.md`, a non-code-reading builder on Supabase/Vercel, reading all twelve): its main finding — the asks fit the audience, the checks assumed devtools, a test copy, and a local build that nothing taught — produced chapter 0 and the hand-off rule above; its reading-order finding moved chapter 12 out of second place; its smaller findings (the surprise bill, the no-tests on-ramp, the unfound commits) are in chapters 9, 12 and 10. A second persona on a non-Supabase stack with tests is the next cheap pass.
+5. **Design pass.** In progress in `design/`. The authorization lab manual is copied into `docs/` at build so chapter 6's footer can link it. Each chapter is a scrollable HTML page (sticky section rail, light/dark, prev/next, a Copy button on every prompt) with an index page that doubles as the map — every chapter with its subtitle and its direct test, plus the reading-order note. The same template prints to 16:9 pages, so a PDF per chapter comes from the same source. Knobs — fonts, sizes, measure, colours, card density, print ratio and columns — are tuned live in the browser and baked into `design/settings.json` for the build. Typography keeps the manual's Poppins headings; the body face is Petrona, chosen on the pages after a side-by-side comparison of candidates. Every chapter now carries at least one `[DIAGRAM]` marker; the diagrams get drawn once the layout settles. The built pages live in `docs/`, served by GitHub Pages from `main`; a rebuild and a push is a deploy.

@@ -33,7 +33,7 @@ On the left of the axis, code commonly runs **serverless**: your function is sta
 
 ## Environments and deploys
 
-An **environment** is a complete copy of the app with its own configuration and data: local for building, production for users, sometimes staging between them. A **deploy** builds the code and swaps it into an environment. "Works locally" and "works deployed" are different claims because between the two environments the machine, the configuration, the data, and the platform constraints all change — which is most of why things break at deploy time.
+An **environment** is a complete copy of the app with its own configuration and data: local for building, production for users, sometimes staging between them. A **deploy** builds the code and swaps it into an environment. "Works locally" and "works deployed" are different claims because between the two environments the machine, the configuration, the data, and the platform constraints all change — which is most of why things break at deploy time. The rule that follows: when a deploy breaks something that worked locally, roll back first and debug after, rather than fixing forward by pasting errors until it works.
 
 A **rollback** is returning to the previous build. The property worth having is knowing, before deploying, exactly what getting back takes — platforms on the left of the axis usually make it one click, and it's worth confirming rather than assuming.
 
@@ -52,6 +52,8 @@ In production nobody is watching the screen, so a failure is only as visible as 
 Two things about what gets recorded are worth knowing. A failure that writes nothing leaves no trace, and background work (chapter 4) is where that happens most, since no user is there to complain. And logs are a place data ends up: a request logged in full carries the user's email, their address, sometimes a password or a key, into a store with its own retention and its own audience — chapter 7's rule about shared artifacts applies to logs too.
 
 What the user sees when something fails is a separate decision. A platform's default is often the whole internal error — file paths, table names, the query that failed — which tells the user nothing useful and tells an attacker a good deal. The user gets a plain message and a reference; the details go to the log.
+
+For a small app with a few hundred users, the floor is error tracking plus one alert that reaches your own inbox; having neither is a decision to make on purpose rather than a default to keep.
 
 ---
 
@@ -75,7 +77,7 @@ What the user sees when something fails is a separate decision. A platform's def
 > **Failure that leaves no trace** — something breaks and nothing records that it did.
 > *Tell:* background jobs and external calls with no logging on the failure branch; an app with no error tracking configured.
 > **Ask:** "For each background job and each external call, say what gets recorded when it fails and where I'd read it. Write nothing where nothing is recorded."
-> **Check:** make one fail on purpose in a test copy, then go and find the evidence.
+> **Check:** make one fail on purpose in a test copy (chapter 0, D1), then go and find the evidence.
 
 > **The error shown in full** — internal details delivered to whoever triggered the failure.
 > *Tell:* stack traces, file paths, or query text in an error the browser displays.
@@ -84,7 +86,7 @@ What the user sees when something fails is a separate decision. A platform's def
 
 ## The direct test
 
-Restore the most recent backup into a disposable copy and open it. One check settles the most expensive claim on this surface, and doing it on a calendar keeps it settled — the failure it guards against produces no symptom until the day the backup is needed.
+First find out whether backups exist at all — on a free tier they often don't — then restore the most recent one into a disposable copy (chapter 0, D1) and open it. One check settles the most expensive claim on this surface, and doing it on a calendar keeps it settled — the failure it guards against produces no symptom until the day the backup is needed.
 
 ---
 

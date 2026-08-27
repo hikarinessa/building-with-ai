@@ -70,12 +70,12 @@ Every public endpoint can be called by anyone, as often as they like, with nothi
 > **Half a write** — several rows that must change together, written one at a time with nothing grouping them.
 > *Tell:* two or more writes in sequence in one handler, with no transaction around them.
 > **Ask:** "For each endpoint that writes more than one table, say whether the writes are grouped in a transaction, and what the data looks like if the second write fails. Say ungrouped explicitly."
-> **Check:** make the second write fail in a test copy and read what the first one left behind.
+> **Check:** make the second write fail in a test copy (chapter 0, D1) and read what the first one left behind.
 
 > **The unmetered endpoint** — a route that does something expensive per call, open to anyone at any rate.
 > *Tell:* an endpoint that sends, spends, or creates, with no login requirement and no rate limit.
 > **Ask:** "List every endpoint that sends a message, calls a paid service, calls an AI model, or creates an account. For each: who can call it, how often one caller may call it, and what a thousand calls in a minute would cost or produce. Write anyone and unlimited where those are the answers."
-> **Check:** call one of them fifty times in a row from the console and see what stops you.
+> **Check:** call one of them fifty times in a row from the console (chapter 0, D2) and see what stops you.
 
 ## The direct test
 

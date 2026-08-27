@@ -9,7 +9,7 @@ Working with an assistant means accepting large batches of changes you didn't ty
 
 ## Commits
 
-A **commit** is a snapshot of the whole project at one moment, with a message saying what changed and why. The project's **history** is the chain of these snapshots. A commit differs from a saved file in what it enables: you can return to any snapshot, compare any two, and see exactly what changed between them — which makes every past state of the project a place you can stand on again.
+A **commit** is a snapshot of the whole project at one moment, with a message saying what changed and why. The project's **history** is the chain of these snapshots. A commit differs from a saved file in what it enables: you can return to any snapshot, compare any two, and see exactly what changed between them — which makes every past state of the project a place you can stand on again. If you've never made a commit on purpose, you may still have them — a tool may have been committing as it worked — and the first ask is whether the project has version control at all and where its history lives; chapter 0's stack prompt includes it.
 
 ## Branches
 
@@ -60,7 +60,7 @@ Three habits make the mechanics into a net that's actually under you:
 
 ## The direct test
 
-Before accepting any large change, say — out loud or in the session — which commit you'd return to if it's wrong. If you can't name one, the safety net isn't under this change, and that's the moment to fix it. Practicing the return once on a harmless change turns the answer from a belief into a rehearsed move.
+Before accepting any large change, say — out loud or in the session — which commit you'd return to if it's wrong. If you can't name one — including because you've never looked — ask the assistant to name it and show it to you; if it can't, the safety net isn't under this change, and that's the moment to fix it. Practicing the return once on a harmless change turns the answer from a belief into a rehearsed move.
 
 ---
 

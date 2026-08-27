@@ -36,7 +36,7 @@ The first two are worth having, since an interface that shows buttons which alwa
 
 The gap between the last two is narrower and matters more. A check in a request handler covers that handler, so it won't apply to a second one added next month that touches the same table, or to a background job, or to an endpoint your assistant adds while you skim the summary. A policy in the database covers paths that don't exist yet, which is why it's usually the one to want first.
 
-**When your database has no policies.** Row-level policies are a feature of some databases and the default convention on platforms built around them; this chapter's examples use Supabase. On a stack where the server talks to the database with one shared credential — most frameworks with their own data layer — the database never learns who the user is, and the server check is the real one. The model still holds: the check belongs in the layer every path passes through. There, that means one place — a scoped query helper, a data-access module, a middleware — that every route and every job goes through, so that a route added next month inherits it. The failing shape is the same as here: a check written into one handler and absent from the next.
+**When your database has no policies.** Row-level policies are a feature of some databases and the default convention on platforms built around them; this chapter's examples use Supabase. On a stack where the server talks to the database with one shared credential — most frameworks with their own data layer — the database never learns who the user is, and the server check is the real one. The model still holds: the check belongs in the layer every path passes through. There, that means one place — a scoped query helper, a data-access module, a middleware — that every route and every job goes through, so that a route added next month inherits it. The failing shape is the same as here: a check written into one handler and absent from the next. Databases without row policies at all — MySQL, most document stores — put the whole chapter on that server layer, and shape 3's ask becomes "for each table, what enforces ownership on each of the four operations."
 
 ## What a database policy is
 
@@ -78,7 +78,7 @@ There are nine shapes, and each carries the *tell* if you do look at code, the *
 > **1 · The UI-only gate** — the button is hidden and the endpoint is open.
 > *Tell:* the only mention of a role or permission sits in interface code.
 > **Ask:** "For each action in this feature, state every place it's enforced: interface, browser code, server, database policy. Flag any action whose only enforcement is in the first two."
-> **Check:** send the request the hidden button would have sent, from a browser console, and see whether it succeeds.
+> **Check:** send the request the hidden button would have sent, from a browser console (chapter 0, D2), and see whether it succeeds.
 
 > **2 · Authenticated but not authorized** — the session is confirmed and ownership never is.
 > *Tell:* a logged-in check followed by a query whose only filter is an id.
@@ -93,7 +93,7 @@ There are nine shapes, and each carries the *tell* if you do look at code, the *
 > **4 · The master key used to clear an error** — a permissions error blocks progress and the privileged credential makes it go away.
 > *Tell:* a service or admin credential in a file the browser can reach, or a commit that fixes a permissions error without touching a policy.
 > **Ask:** "List every place a privileged key is used, and for each, why the request can't work with the public key."
-> **Check:** search the built client bundle for the key's value. If it was ever in the browser, rotate it — whether anyone found it is a separate question from whether the door was open.
+> **Check:** search the built client bundle for the key's value (chapter 0's D3 prompt builds it and searches). If it was ever in the browser, rotate it — whether anyone found it is a separate question from whether the door was open.
 
 > **5 · Partial coverage** — reads are restricted and writes are open, or updates are checked on the way in and nothing examines where the row lands.
 > *Tell:* fewer than four operations addressed on a table users can write to.
@@ -160,7 +160,7 @@ These prompts are for your assistant, and each comes with a note on what a good 
 
 **D5 · Set the house rules** *(build a toy)*
 
-Put this in the instructions file your assistant reads (`CLAUDE.md`, `AGENTS.md`, or your tool's equivalent), then re-run a recent feature request in a fresh session and compare what comes back against what you originally merged:
+Put this in the instructions file your assistant reads (`CLAUDE.md`, `AGENTS.md`, `.cursor/rules`, or your tool's equivalent — chapter 0's D4 names it), then re-run a recent feature request in a fresh session and compare what comes back against what you originally merged:
 
 > - Every new table gets row-level security enabled in the same migration that creates it, plus explicit policies for read, insert, update, delete.
 > - The user's identity always comes from the session token, never from a request body, query parameter, or client-supplied field.
@@ -177,4 +177,4 @@ Put this in the instructions file your assistant reads (`CLAUDE.md`, `AGENTS.md`
 
 **Chapter 1 · Client and server** is the model this chapter stands on. **Chapter 7 · Secrets and configuration** picks up the master key — shape 4 is where the two chapters meet. **Chapter 8 · Injection** covers what a request's text can make your side do once it's past the check. **Chapter 12 · Verification** generalizes the ask-and-check method used here to every surface.
 
-**The full-depth version** of this chapter exists as a five-sitting lab manual — you build a small multi-user project, break it, protect it, and write real policies against a checker that passes or fails. Worth doing if your project holds other people's data; the manual assumes no programming experience.
+**The full-depth version** of this chapter exists as [a five-sitting lab manual](authorization-lab-manual.pdf) — you build a small multi-user project, break it, protect it, and write real policies against a checker that passes or fails. Worth doing if your project holds other people's data; the manual assumes no programming experience.

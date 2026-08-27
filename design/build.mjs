@@ -89,6 +89,8 @@ for (const c of selected) {
 
 // ---------- index ----------
 const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+// the authorization lab manual, linked from chapter 6's footer
+{ const manual = resolve(here, '..', 'reference', 'authorization-lab-manual.pdf'); if (existsSync(manual)) writeFileSync(resolve(outDir, 'authorization-lab-manual.pdf'), readFileSync(manual)); }
 let bodyFont = 'Petrona';
 try { bodyFont = JSON.parse(settings).fontBody || bodyFont; } catch {}
 const cards = all.map(c => {
@@ -139,8 +141,8 @@ addEventListener('DOMContentLoaded',()=>{const b=document.getElementById('themet
 <main>
 <div class="series">Building with AI</div>
 <h1>Building with AI</h1>
-<p class="intro">This is a 12-chapter self-guided course on the mental models behind software you build with an AI assistant — Claude Code, Cursor, and the like; "your assistant" from here on. Each chapter teaches one of them, describes what usually goes wrong when the assistant writes that part, and gives you prompts to go deeper on your own project. Each card below carries the chapter's direct test, the one check that settles most of that area at once, so this page works as the map.</p>
-<p class="order"><b>Reading order.</b> Chapters stand alone. Read chapter 1 first, since chapters 6, 7 and 8 assume it; if you're already shipping, read chapter 12 next, since its method is what every chapter's going-deeper section uses. The prompts assume an assistant that can read your project — a tool that works inside your files. From a chat window, paste the relevant files first.</p>
+<p class="intro">This is a self-guided course on the mental models behind software you build with an AI assistant — Claude Code, Cursor, and the like; "your assistant" from here on. Twelve chapters each teach one of them, describe what usually goes wrong when the assistant writes that part, and give you prompts for investigating a project of your own — there's nothing to build, and you can read it all before you have one. Each card below carries the chapter's direct test, the one check that settles most of that area at once, so this page works as the map.</p>
+<p class="order"><b>Reading order.</b> Chapter 0 is ten minutes on how the course is used and the prompts the others assume; read it, then chapter 1. If you're already shipping and something has worried you, read chapter 6 next. Leave chapter 12 until you've run one of the prompts — it decides how much checking a change deserves, and that lands better with a result in hand.</p>
 <div class="grid">
 ${cards}
 </div>

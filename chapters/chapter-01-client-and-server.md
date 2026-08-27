@@ -19,7 +19,7 @@ When someone opens your app, their browser downloads your interface code — the
 
 Every browser ships with developer tools that make this concrete: a panel that shows the downloaded code, a console that runs arbitrary commands against the open page, and a network tab that lists every request the page sends. This is standard equipment for building and debugging the web.
 
-Your side is the server and the database behind it. Visitors can send requests to your side, and that is the whole of what they can do to it — which is why it's the only place a rule binds.
+Your side is the server and the database behind it. Visitors can send requests to your side, and that is the whole of what they can do to it — which is why it's the only place a rule binds. The line between the two sides is the **trust boundary**: what's on your side of it you can rely on, and what's on the other side you can't.
 
 [DIAGRAM: two sides separated by a dashed line labelled "the wire". Visitor's side: browser holding "your interface code (their copy)", devtools, console. Your side: server, then database. A single arrow crosses the line, labelled "requests — the only traffic".]
 
@@ -45,7 +45,7 @@ Four terms cover most of what an assistant will say about the machine your code 
 
 ## What people mean by "a stack"
 
-A stack is a named set of choices: which language and framework on the server, which database, which host. The word matters to you for one practical reason — assistants have defaults, advice transfers within a stack much better than across, and knowing your stack's names lets you ask questions that get answers about your actual setup rather than about the general case.
+A stack is a named set of choices: which language and framework on the server, which database, which host. The word matters to you for one practical reason — assistants have defaults, advice transfers within a stack much better than across, and knowing your stack's names lets you ask questions that get answers about your actual setup rather than about the general case. Chapter 0's first prompt gets you the names for yours.
 
 ---
 
@@ -70,7 +70,7 @@ The three entries here are instances of one failure: something the server needed
 
 ## The direct test
 
-Open the network tab, use your own form once, and find the request it sent. Copy it into the console, change one value to something the form forbids, and send it. A rejection tells you which server-side rule caught it; success tells you the rule you thought you had lives only in the form. The whole test takes about ten minutes.
+Open the network tab, use your own form once, and find the request it sent. Copy it into the console, change one value to something the form forbids, and send it. A rejection tells you which server-side rule caught it; success tells you the rule you thought you had lives only in the form. The whole test takes about ten minutes, and if you've never opened the network tab, chapter 0's D2 prompt has your assistant walk you through it once.
 
 ---
 
@@ -106,4 +106,4 @@ These prompts are for your assistant, and each comes with a note on what a good 
 
 ## Where this connects
 
-**Chapter 6 · Authorization** applies this picture to who-can-see-what — its four-places table is this chapter's boundary with names on it. **Chapter 7 · Secrets and configuration** applies it to keys, where crossing the line is a one-way trip. **Chapter 3 · Source of truth** picks up what happens to data once both sides hold copies of it. **Chapter 8 · Injection** covers the other thing a request can carry: text that becomes code on your side. **Chapter 12 · Verification** is the method every going-deeper section in this series uses; if you're already shipping, read it next.
+**Chapter 6 · Authorization** applies this picture to who-can-see-what — its four-places table is this chapter's boundary with names on it. **Chapter 7 · Secrets and configuration** applies it to keys, where crossing the line is a one-way trip. **Chapter 3 · Source of truth** picks up what happens to data once both sides hold copies of it. **Chapter 8 · Injection** covers the other thing a request can carry: text that becomes code on your side. **Chapter 0 · The toolkit** holds the re-send prompt this chapter's checks use. If you're already shipping and something has worried you, **chapter 6 · Authorization** is the one to read next.

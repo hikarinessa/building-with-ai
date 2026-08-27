@@ -41,7 +41,7 @@ Some columns describe a person rather than a thing: an email, an address, a birt
 
 A **migration** is a script that changes the schema: add a table, add a column, change a type. Against an empty database it's trivial. Against real rows, three costs appear: existing rows need values for new columns (a **backfill**), some changes can't be undone (a dropped column's data is gone), and mistakes mid-migration can leave the data half-transformed. The practical consequence runs backwards: review effort belongs on schema proposals *before* rows accumulate, because that's the last point where changing your mind is free.
 
-## Blobs against columns
+## A JSON column against real columns
 
 Most databases offer a JSON column: a place to store arbitrary structured data without declaring its shape. The trade is flexibility now against consequences later — no constraints, weaker querying, and every reader guessing at the contents' shape. It fits data that is genuinely irregular or that only gets stored and displayed. Anything you'll filter by, join on, or enforce rules about belongs in columns.
 
@@ -53,7 +53,7 @@ An **index** is a lookup structure the database maintains for a column, so a que
 
 # What goes wrong
 
-There are ten entries: the first four concern the shape itself, the next five what the shape does to reads, writes, and growth, and the last what the schema holds about people.
+There are ten entries: the first four concern the shape itself, the fifth what the schema holds about people, and the rest what the shape does to reads, writes, and growth.
 
 > **A boolean where a table belongs** — a flag standing in for something with variants.
 > *Tell:* columns like `repeat_weekly` or `is_premium`, where a second variant is plausible.
@@ -68,12 +68,17 @@ There are ten entries: the first four concern the shape itself, the next five wh
 > **Current state stored alongside history** — a value stored in two places with nothing keeping them equal.
 > *Tell:* a `status` column plus an events or log table that also implies the status; a `total` column plus the line items it's computed from.
 > **Ask:** "Which columns can be derived from other tables? For each, say what keeps them in sync, and what happens if a write fails halfway."
-> **Check:** cause the drift deliberately in a test copy, then see whether anything notices.
+> **Check:** cause the drift deliberately in a test copy (chapter 0, D1), then see whether anything notices.
 
 > **A destructive migration presented as additive** — a change described as adding a feature that also loses data.
 > *Tell:* a column rename, a type change, or a dropped default inside a migration whose description mentions none of them.
 > **Ask:** "List every statement in this migration that loses data or breaks an existing read. For each, give the rollback."
 > **Check:** run it against a copy with real data before running it against the real thing.
+
+> **Personal data with no reason and no exit** — columns about a person that nothing needed and nothing deletes.
+> *Tell:* emails, addresses, birthdates, or free text about users, kept with no stated purpose and no path that removes them when the account goes.
+> **Ask:** "List every column that holds information about a person. For each: what the product does with it, how long it's kept, and what happens to it when the person deletes their account. Write forever and nothing where those are the answers."
+> **Check:** delete a test account, then search every table for its rows.
 
 > **Soft delete that still appears in reads** — deleted rows shown because a query didn't exclude them.
 > *Tell:* a `deleted_at` column, and queries on the same table that never mention it.
@@ -100,14 +105,9 @@ There are ten entries: the first four concern the shape itself, the next five wh
 > **Ask:** "For each table that references stored files, state what happens to the file when the row is deleted. Say nothing where the answer is nothing."
 > **Check:** delete a test row, then look for its file in storage.
 
-> **Personal data with no reason and no exit** — columns about a person that nothing needed and nothing deletes.
-> *Tell:* emails, addresses, birthdates, or free text about users, kept with no stated purpose and no path that removes them when the account goes.
-> **Ask:** "List every column that holds information about a person. For each: what the product does with it, how long it's kept, and what happens to it when the person deletes their account. Write forever and nothing where those are the answers."
-> **Check:** delete a test account, then search every table for its rows.
-
 ## The direct test
 
-Ask for the list of states your schema permits and your product forbids (the second entry's ask), pick the worst one, and insert it into a test copy. What stops it — a constraint, an error from application code, or nothing — is the measure of how much your schema is enforcing on its own, and it's the guard that will still be there when new code writes to the same table.
+Ask for the list of states your schema permits and your product forbids (the second entry's ask), pick the worst one, and insert it into a test copy (chapter 0's D1 prompt gets you one). What stops it — a constraint, an error from application code, or nothing — is the measure of how much your schema is enforcing on its own, and it's the guard that will still be there when new code writes to the same table.
 
 ---
 
@@ -117,7 +117,7 @@ These prompts are for your assistant, and each comes with a note on what a good 
 
 **D1 · Interrogate the schema** *(audit)*
 
-> Here is my schema: [paste it, or point at the migrations]. Produce three lists. One: every boolean column, with the second and third variant a user might eventually want — 'none' where there isn't one. Two: every nullable column, with each distinct thing empty can mean in it. Three: every column whose value could be computed from other tables, with what keeps it in sync. Full lists, as tables, no summarizing.
+> Here is my schema: [point your assistant at the project — on a hosted database the table editor holds it, and there may be a migrations folder]. Produce three lists. One: every boolean column, with the second and third variant a user might eventually want — 'none' where there isn't one. Two: every nullable column, with each distinct thing empty can mean in it. Three: every column whose value could be computed from other tables, with what keeps it in sync. Full lists, as tables, no summarizing.
 
 *A good response has a row for every column that qualifies, and the second list is where findings usually live — any nullable column with two meanings listed is a real decision waiting. Follow up on each: "what would fixing this cost now, and at a hundred thousand rows?"*
 

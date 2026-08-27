@@ -21,7 +21,7 @@ Platforms issue keys in pairs, and the two kinds have opposite rules.
 
 A **public key** is designed to ship in the browser. It identifies your app rather than trusting the holder, and it's safe in the open only because the real rules are enforced elsewhere — the database policies of chapter 6. Finding it in devtools is expected.
 
-A **privileged key** bypasses those rules; it exists for trusted server-side work, and it must never reach a browser, a shared file, or a log. Platforms name the pair so you can tell them apart — `anon` against `service_role`, publishable against secret — and the naming is the first thing to check when a key appears somewhere new.
+A **privileged key** bypasses those rules; it exists for trusted server-side work, and it must never reach a browser, a shared file, or a log. Platforms name the pair so you can tell them apart — `anon` against `service_role`, publishable against secret — and the naming is the first thing to check when a key appears somewhere new. Other platforms name the pair differently — a web key against an admin credential, publishable against secret — and the rule is the same. A privileged key that can spend turns exposure into a bill, which is often how a leak is first noticed.
 
 ## The one-way door
 
@@ -60,7 +60,7 @@ A working list: committed to a repository, including in its history; carried in 
 
 ## The direct test
 
-Build the client and search the output for the first characters of each secret. It takes minutes and converts "the bundler shouldn't include it" into an observation about what the bundler did. Repeat it after dependency or framework changes — bundling behaviour is configuration too, and it drifts.
+Build the client and search the output for the first characters of each secret — chapter 0's D3 prompt does both and shows you the command. It takes minutes and converts "the bundler shouldn't include it" into an observation about what the bundler did. Repeat it after dependency or framework changes — bundling behaviour is configuration too, and it drifts.
 
 ---
 

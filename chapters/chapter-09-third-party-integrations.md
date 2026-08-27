@@ -39,6 +39,10 @@ Retries, timeouts, double-clicks, and webhook redeliveries all mean the same cre
 
 Services cap how often you may call them, and reaching the cap is a normal operating state rather than an error: the correct responses are backing off, queueing the work (chapter 4), or spreading it out. Code that treats a rate-limit response as a crash converts a routine throttle into an outage. The mirror — capping how often others may call *your* endpoints, which is what keeps a paid call from becoming a bill — is chapter 4's unmetered-endpoint entry.
 
+## What they charge
+
+Most rented services bill per call or per unit — a message, a lookup, a thousand tokens — and a surprise bill is this chapter's failure arriving as money: a call made more often than the code suggested, a key used by someone who found it, a free tier that ended. Three things settle it, and each is a line on the provider's dashboard: what one call costs, what cap the service lets you set, and what alerts you before the cap is reached. A service with no cap set will let a bug or a stranger run up whatever the month allows.
+
 ## Change on their schedule
 
 An external service changes on its own timeline: versions, deprecations, new required fields. A dependency therefore costs more than the integration work — it adds their calendar to yours, and eventually a migration. This is the real weight behind "should we add this service," and it's a chapter 12 tier question as much as a technical one.
@@ -69,6 +73,11 @@ Every call carries data out of your system into theirs, and for some calls that 
 > **Ask:** "For each call that can be sent more than once — retries, double-clicks, webhook redeliveries — say whether running it twice produces one result or two."
 > **Check:** run it twice with the same input and count what exists afterwards.
 
+> **The uncapped service** — a paid call with no ceiling on what it can cost you.
+> *Tell:* no spending limit and no budget alert on the provider's side; a bill you couldn't have predicted from the code.
+> **Ask:** "For each paid service, state what one call costs, what we spent last month, what cap is set on the provider's side, and what alerts before it. Say none explicitly."
+> **Check:** the provider's billing page — last month's number against what you expected.
+
 > **The unexamined dependency** — a library added to do one thing, with nobody having asked what else it does or who maintains it.
 > *Tell:* new entries in the dependency list that the summary never mentioned; a package imported for a single function.
 > **Ask:** "List every dependency this change added, with what it's used for, whether the project could do the same without it, and when it was last published. Flag anything used for one function and anything not published in the last year."
@@ -81,7 +90,7 @@ Every call carries data out of your system into theirs, and for some calls that 
 
 ## The direct test
 
-Point one integration at an address that doesn't answer and use the feature as a user would. What the screen does while nothing comes back, and what state the data is in afterwards, is your app's actual partial-failure behaviour.
+Point one integration at an address that doesn't answer — in a test copy (chapter 0, D1), with the assistant making the change and undoing it, as D3 below sets up — and use the feature as a user would. What the screen does while nothing comes back, and what state the data is in afterwards, is your app's actual partial-failure behaviour.
 
 ---
 
@@ -91,7 +100,7 @@ These prompts are for your assistant, and each comes with a note on what a good 
 
 **D1 · The integration inventory** *(audit)*
 
-> List every external service my app calls, and every call to it. For each call: the timeout, the retry policy, the backoff, whether an idempotency key is used, which fields about a person it sends, and what the user sees when the call fails. Full table; write none where the answer is none.
+> List every external service my app calls, and every call to it. For each call: the timeout, the retry policy, the backoff, whether an idempotency key is used, which fields about a person it sends, what one call costs and what cap or alert is set on it, and what the user sees when the call fails. Full table; write none where the answer is none.
 
 *A good response is a table with honest nones — a young integration usually has a row that reads none, none, none, and that row is the worklist. Follow up on any creating call without a key: "show me what two of these would look like in the data."*
 

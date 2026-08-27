@@ -17,7 +17,7 @@ Every value is either recorded directly or computable from other recorded values
 
 When the browser fetches data, it receives a copy that was correct at the moment of the response. The database keeps changing after that moment, and nothing notifies the copy. Fetched data is therefore a cache: a copy kept for speed, aging from the moment it arrives.
 
-The copies multiply quietly; a typical path holds five: the database row, the server's response, the client's fetch cache, a component's state, and a form's initial value. Duplication starts where fetched data gets treated as local state — copied out of the cache into a component, after which the two age independently and edits land in one but not the other.
+The copies multiply quietly; a typical path holds five: the database row, the server's response, the client's fetch cache, a component's state (a component is one piece of the interface — a form, a list — with its own memory), and a form's initial value. Duplication starts where fetched data gets treated as local state — copied out of the cache into a component, after which the two age independently and edits land in one but not the other.
 
 [DIAGRAM: five boxes left to right — database row, server response, fetch cache, component state, form value — each stamped with a different age; an edit arrow entering at the form and reaching only some of the boxes on its way back]
 
@@ -49,7 +49,7 @@ Which screen the user is on, what's selected, which filters are active — this 
 > **Optimistic update with no rollback** — the screen assumes the write will succeed and has no plan for when it doesn't.
 > *Tell:* a local update applied before the request is sent, with no handling of a rejected response.
 > **Ask:** "For each place the interface updates before the server confirms, state what happens when the server rejects the write, and what the user sees."
-> **Check:** block the request in devtools and watch the screen.
+> **Check:** block the request in devtools (D4 shows how) and watch the screen.
 
 > **Failure after the user has typed** — a rejected submission that discards the input.
 > *Tell:* no submission state, and no branch for a failed response.
@@ -63,7 +63,7 @@ Which screen the user is on, what's selected, which filters are active — this 
 
 ## The direct test
 
-Open your app in two windows side by side. Change something in one and watch whether, and when, the other notices. Then block the network in one window's devtools and try a write. It takes about ten minutes, and the results are your app's actual answers to the staleness question and the rollback question, whatever the code was intended to do.
+Open your app in two windows side by side. Change something in one and watch whether, and when, the other notices. Then block the network in one window's devtools and try a write — D4 below has your assistant show you how, and chapter 0's D2 is the shorter version. It takes about ten minutes, and the results are your app's actual answers to the staleness question and the rollback question, whatever the code was intended to do.
 
 ---
 
