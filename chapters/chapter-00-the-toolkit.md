@@ -44,6 +44,10 @@ Some checks need a capability you may not have, and none of them needs learning.
 
 The going-deeper section has the three prompts. Run whichever a chapter's check needs, when it needs it.
 
+## If you have no project yet
+
+The models read the same without one, and the prompts wait. When you want something to run them on, any project you can point an assistant at will do — one you've built, one you've inherited, a small open-source app you've cloned — and the first prompt above tells you what it's made of. A sandbox project is in preparation for this course: a small app with known findings planted in it, so the asks can be tried where the right answer is known before they're pointed at something real. Until it exists, your own project is the practice ground, and *plant a control* is how you check an ask before trusting it there.
+
 ## What a finding is
 
 A finding is a row on a list, or a check that came back wrong. It isn't an emergency and it isn't a verdict — it's the start of a conversation with the assistant, in which you ask what the fix is, what it touches, and how you'd know it worked. Chapter 12 decides how much evidence that conversation should end with, by what the change touches.
